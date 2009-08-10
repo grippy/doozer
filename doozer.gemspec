@@ -26,6 +26,7 @@ Gem::Specification.new do |s|
      "Rakefile",
      "VERSION",
      "bin/doozer",
+     "doozer.gemspec",
      "lib/doozer.rb",
      "lib/doozer/README.rb",
      "lib/doozer/active_support/array.rb",
