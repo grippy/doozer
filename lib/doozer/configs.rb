@@ -23,7 +23,6 @@ module Doozer
       case rack_env
       when :development
       when :deployment
-        rack_env = :deployment
       when :test, :none
         rack_env = :test
       else

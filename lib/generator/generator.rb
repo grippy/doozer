@@ -65,7 +65,7 @@ module Doozer
             else
             help_all
           end
-        elsif ['-v', '--version']
+        elsif ['-v', '--version'].include?(action)
           p "Doozer #{Doozer::Version::STRING}"
         else
           help_all

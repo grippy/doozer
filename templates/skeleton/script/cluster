@@ -1,4 +1,5 @@
 #!/usr/bin/env ruby
+require 'date'
 require 'rubygems'
 require 'doozer'
 APP_PATH = Dir.pwd
