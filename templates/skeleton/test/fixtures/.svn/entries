@@ -1,0 +1,40 @@
+8
+
+dir
+1885
+http://svn.goblr.com/svn/dev/trunk/projects/doozer/scaffold/test/fixtures
+http://svn.goblr.com/svn/dev
+
+
+
+2009-07-29T15:19:20.846748Z
+1885
+gmelton
+
+
+svn:special svn:externals svn:needs-lock
+
+
+
+
+
+
+
+
+
+
+
+03e770e9-462e-0410-97f5-90143f924265
+
+setup.rb
+file
+
+
+
+
+2009-07-29T15:20:01.000000Z
+db8901e27a74152210bc2d37ef1f46a4
+2009-07-29T15:19:20.846748Z
+1885
+gmelton
+

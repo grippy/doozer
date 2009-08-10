@@ -1,9 +1,43 @@
-= doozer
+= What is Doozer?
+* A lightweight, ORM agnostic, Rack (http://rack.rubyforge.org) compatible MVC framework.
 
-Description goes here.
+== Project Inspiration
+* Doozer was initially a project I started working on for Google App Engine. It was eventually abandoned since GAE lacked (at the time and may still) proper support for migrations. I ported some of the code to Ruby mainly to learn the internals of Rack back in December 2008.
+* Some of the more useful Rails conventions and methodologies (mostly the application structure, configuration, nomenclature, scripts, and a few viewhelper methods).
+* Clustering ala Mongrel::Cluster
 
-== Note on Patches/Pull Requests
- 
+== Requirements
+* Ruby < 1.9 (untestested on Ruby 1.9 as of now)
+* Rack (http://rack.rubyforge.org) gem (0.9.1 or 1.0.0)
+* An http server supported by Rack
+* ActiveRecord, DataMapper or Sequel
+
+== Getting Started
+1. Run 'doozer test-app' to generate the base application skeleton.
+2. Fire up the application in development mode=> 'script/cluster -C start'.
+3. Navigate to http://localhost:9292
+
+== Configuration
+* Doozer is configurable to use an ORM library of your choosing: ActiveRecord, DataMapper, or Sequel.
+* By default, routes are handled by Doozer controllers or you can define other Rack compatible applications which handle specific request paths.
+* Http server of your liking (Mongrel, Thin, Lighttpd, or anything supported by Rack).
+* Multiple appservers.
+* Static directories.
+
+== Useful Scripts
+* Generate an application skeleton. Run 'doozer test-app' (see Getting Started).
+* Generate views, controllers, and models (depending on the configured ORM). Run 'doozer generate -h' for more info.
+* start/stop/restart your web server(s). Run 'script/cluster -h' for more info.
+* Migrations up or down. 'script/migrate -h'.
+* Tasks. Run 'script/task -h' for more info
+* There is a rudimentary test command which allows you to run your own test suite for your application. Run 'script/test -h' for more info.
+
+== Current limitations:
+* Doozer has no test suite. Tsk-tsk I know. In the works.
+* Right now, it doesn't keep track of migration versions.
+* Magic routes are turned off. These worked at one point. They may work again one day.
+
+== Note on Patches/Pull Requests 
 * Fork the project.
 * Make your feature addition or bug fix.
 * Add tests for it. This is important so I don't break it in a
@@ -14,5 +48,4 @@ Description goes here.
 * Send me a pull request. Bonus points for topic branches.
 
 == Copyright
-
-Copyright (c) 2009 grippy. See LICENSE for details.
+Copyright (c) 2009 Greg Melton. See LICENSE for details.

@@ -1,0 +1,31 @@
+development:
+    name: app_name_development
+    base_url: http://localhost:9292/
+    static_urls: ["/favicon.ico", "/robots.txt", "/css", "/images", "/html", "/js"]
+    static_root: static
+    404: static/404.html
+    500: static/500.html
+  
+production:
+    name: app_name_production
+    base_url: http://example.com/
+    static_urls: ["/favicon.ico", "/robots.txt", "/css", "/images", "/html", "/js"]
+    static_root: static
+    404: static/404.html
+    500: static/500.html
+
+# test automatically loads the app with 127.0.0.1:5000
+test:
+    name: app_name_test
+    base_url: http://localhost:5000
+    static_urls: ["/favicon.ico", "/robots.txt", "/css", "/images", "/html", "/js"]
+    static_root: static
+    404: static/404.html
+    500: static/500.html
+
+# this is the default server to use when starting up the app clusters
+# add multiple ip:port csv values. all are loaded for production. 
+# only the first is loaded for development
+clusters:
+    server: mongrel
+    apps: ["127.0.0.1:9292"]

@@ -1,0 +1,4 @@
+#!/usr/bin/env ruby
+require 'rubygems'
+require 'doozer'
+require DOOZER_PATH + '/doozer/scripts/test'

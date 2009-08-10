@@ -5,12 +5,14 @@ begin
   require 'jeweler'
   Jeweler::Tasks.new do |gem|
     gem.name = "doozer"
-    gem.summary = %Q{TODO: one-line summary of your gem}
-    gem.description = %Q{TODO: longer description of your gem}
-    gem.email = "massgripnosis@hotmail.com"
+    gem.summary = %Q{A little MVC framework for Rack applications.}
+    gem.description = %Q{Doozer's liked to build things on Fragile Rock. This GEM provides a small, barebones framework for creating MVC Rack applications.}
+    gem.email = "gmelton@whorde.com"
     gem.homepage = "http://github.com/grippy/doozer"
     gem.authors = ["grippy"]
     # gem is a Gem::Specification... see http://www.rubygems.org/read/chapter/20 for additional settings
+    gem.files.include %w(lib/doozer/**/**/**/** lib/generator/* templates/skeleton/**/**/**)
+    
   end
 
 rescue LoadError
