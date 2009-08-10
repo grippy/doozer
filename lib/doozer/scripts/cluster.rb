@@ -14,7 +14,7 @@ require 'optparse'
 
 APP_PATH = Dir.pwd if APP_PATH.nil?
 
-config =  Doozer::Configs.symbolize_keys( YAML.load(File.read(File.join(APP_PATH,'/config/app.yml'))) )
+config =  Doozer::Configs.symbolize_keys( YAML.load(File.read(File.join(APP_PATH,'config/app.yml'))) )
 clusters = Doozer::Configs.symbolize_keys(config[:clusters])
 
 @command = nil

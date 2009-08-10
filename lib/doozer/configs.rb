@@ -1,5 +1,6 @@
 require 'rbconfig'
 require 'logger'
+require 'yaml'
 
 module Doozer
   
