@@ -3,19 +3,24 @@
 
 == Project Inspiration
 * Doozer was initially a project I started working on for Google App Engine. It was eventually abandoned since GAE lacked (at the time and may still) proper support for migrations. I ported some of the code to Ruby mainly to learn the internals of Rack back in December 2008.
-* Some of the more useful Rails conventions and methodologies (mostly the application structure, configuration, nomenclature, scripts, and a few viewhelper methods).
+* Rails conventions and methodologies (mostly the application structure, configuration, nomenclature, scripts, and a few viewhelper methods).
 * Clustering ala Mongrel::Cluster
 
 == Requirements
 * Ruby < 1.9 (untestested on Ruby 1.9 as of now)
 * Rack (http://rack.rubyforge.org) gem (0.9.1 or 1.0.0)
 * An http server supported by Rack
-* ActiveRecord, DataMapper or Sequel
+* ActiveRecord, DataMapper or Sequel (only if you need DB support)
 
 == Getting Started
-1. Run 'doozer test-app' to generate the base application skeleton.
-2. Fire up the application in development mode=> 'script/cluster -C start'.
-3. Navigate to http://localhost:9292
+1. Install the gem(s):
+	- gem sources -a http://gems.github.com (if you haven't already)
+	- sudo gem install rack
+	- sudo gem install grippy-doozer
+	
+2. Run 'doozer test-app' to generate the base application skeleton.
+3. Fire up the application in development mode=> 'script/cluster -C start'.
+4. Navigate to http://localhost:9292
 
 == Configuration
 * Doozer is configurable to use an ORM library of your choosing: ActiveRecord, DataMapper, or Sequel.
@@ -35,7 +40,8 @@
 == Current limitations:
 * Doozer has no test suite. Tsk-tsk I know. In the works.
 * Right now, it doesn't keep track of migration versions.
-* Magic routes are turned off. These worked at one point. They may work again one day.
+* Magic routes are turned off. These worked at one point. They may work again one day. Still debating adding them back.
+* Not all the documentation is in place.
 
 == Note on Patches/Pull Requests 
 * Fork the project.
@@ -43,8 +49,7 @@
 * Add tests for it. This is important so I don't break it in a
   future version unintentionally.
 * Commit, do not mess with rakefile, version, or history.
-  (if you want to have your own version, that is fine but
-   bump version in a commit by itself I can ignore when I pull)
+  (if you want to have your own version, that is fine but bump version in a commit by itself I can ignore when I pull)
 * Send me a pull request. Bonus points for topic branches.
 
 == Copyright
