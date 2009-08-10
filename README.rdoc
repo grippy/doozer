@@ -9,7 +9,7 @@
 == Requirements
 * Ruby < 1.9 (untestested on Ruby 1.9 as of now)
 * Rack (http://rack.rubyforge.org) gem (0.9.1 or 1.0.0)
-* An http server supported by Rack
+* Any http server supported by Rack
 * ActiveRecord, DataMapper or Sequel (only if you need DB support)
 
 == Getting Started
@@ -17,9 +17,10 @@
 	- gem sources -a http://gems.github.com (if you haven't already)
 	- sudo gem install rack
 	- sudo gem install grippy-doozer
-	
 2. Run 'doozer test-app' to generate the base application skeleton.
-3. Fire up the application in development mode=> 'script/cluster -C start'.
+3. Fire up the application in development mode 
+	- cd test-app
+	- script/cluster -C start
 4. Navigate to http://localhost:9292
 
 == Configuration
@@ -40,7 +41,7 @@
 == Current limitations:
 * Doozer has no test suite. Tsk-tsk I know. In the works.
 * Right now, it doesn't keep track of migration versions.
-* Magic routes are turned off. These worked at one point. They may work again one day. Still debating adding them back.
+* Magic routes are turned off. Still debating adding them back.
 * Not all the documentation is in place.
 
 == Note on Patches/Pull Requests 
