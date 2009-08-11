@@ -1,0 +1,7 @@
+#!/usr/bin/env ruby
+require 'date'
+require 'rubygems'
+$:.unshift File.join(File.dirname(__FILE__), '..', 'lib')
+require 'doozer'
+p DOOZER_PATH
+system("irb --simple-prompt --readline -r irb/completion #{DOOZER_PATH}/doozer/scripts/console.rb")
