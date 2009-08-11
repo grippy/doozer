@@ -12,7 +12,7 @@ module Doozer
         :password => db_config["password"],
         :host     => db_config["host"]
       }) 
-      p "ORM: #{Doozer::Configs.orm} initialized..."
+      printf "ORM: #{Doozer::Configs.orm} initialized...\n"
     end
   end
 end

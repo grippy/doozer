@@ -11,8 +11,8 @@ module Doozer
         :password => db_config["password"],
         :database => db_config["database"]
       )
-      p "ORM: #{Doozer::Configs.orm()} initialized..."
-      p "ORM: logging initialized"
+      printf "ORM: #{Doozer::Configs.orm()} initialized...\n"
+      # printf "ORM: logging initialized"
       ActiveRecord::Base.logger = Doozer::Configs.logger 
     end
   end

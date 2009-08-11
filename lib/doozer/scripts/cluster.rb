@@ -8,8 +8,6 @@
 # -E environment (default: development || deployment)
 # -D (daemonize) - This is automatically initialized in deployment mode. There should be no need to pass this unless you want to test it out in development mode.
 # -h Hellllpppp!!!
-
-require 'date' # needs to be included before rubygems. otherwise
 require 'optparse'
 
 APP_PATH = Dir.pwd if APP_PATH.nil?

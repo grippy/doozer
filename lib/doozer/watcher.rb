@@ -36,17 +36,16 @@ module ServiceState
   def setState(newState)
     @stateMutex.synchronize {
       if newState == CONFIGURED then
-	@configured = true
+	      @configured = true
       else
-	@state = newState
-	if isStarted? then
-	  @startTime = Time.now()
-	elsif isStopped?
-	  @stopTime = Time.now()
-	end
+	      @state = newState
+      	if isStarted? then
+      	  @startTime = Time.now()
+      	elsif isStopped?
+      	  @stopTime = Time.now()
+      	end
       end
     }
-    
     if defined?(@stateCallback) then
       @stateCallback.call(newState)
     end
@@ -93,6 +92,8 @@ class FileSystemWatcher
 
   # you can optionally use the file contents md5 to detect if a file has changed
   attr_accessor :useMD5
+
+  attr_accessor :foundFiles, :files, :directories
 
   def initialize(dir=nil, expression="**/*")
     @sleepTime = 5
@@ -158,46 +159,46 @@ class FileSystemWatcher
     @watchThread = Thread.new {
       # we will be stopped if someone calls stop or if someone set a stopWhen that becomes true
       while !isStopped? do
-	if (!@directories.empty?) or (!@files.empty?) then	
-	  # this will hold the list of the files we looked at this iteration
-	  # allows us to not look at the same file again and also to compare
-	  # with the foundFile list to see if something was deleted
-	  alreadyExamined = Hash.new()
+	      if (!@directories.empty?) or (!@files.empty?) then	
+      	  # this will hold the list of the files we looked at this iteration
+      	  # allows us to not look at the same file again and also to compare
+      	  # with the foundFile list to see if something was deleted
+      	  alreadyExamined = Hash.new()
 	  
-	  # check the files in each watched directory
-	  if not @directories.empty? then
-	    @directories.each { |dirObj|
-	      examineFileList(dirObj.getFiles(), alreadyExamined, &block)
-	    }
-	  end
+      	  # check the files in each watched directory
+      	  if not @directories.empty? then
+      	    @directories.each { | dirObj |
+      	      examineFileList(dirObj.getFiles(), alreadyExamined, &block)
+      	    }
+      	  end
 	  
-	  # now examine any files the user wants to specifically watch
-	  examineFileList(@files, alreadyExamined, &block) if not @files.empty?
+      	  # now examine any files the user wants to specifically watch
+      	  examineFileList(@files, alreadyExamined, &block) if not @files.empty?
 	  
-	  # see if we have to delete files from our found list
-	  if not @firstLoad then
-	    if not @foundFiles.empty? then
-	      # now diff the found files and the examined files to see if
-	      # something has been deleted
-	      allFoundFiles = @foundFiles.keys()
-	      allExaminedFiles = alreadyExamined.keys()
-	      intersection = allFoundFiles - allExaminedFiles
-	      intersection.each { |fileName|
-        # callback
-        block.call(DELETED, fileName)
-        # remove deleted file from the foundFiles list
-        @foundFiles.delete(fileName)
-            }	  
+      	  # see if we have to delete files from our found list
+      	  if not @firstLoad then
+      	    if not @foundFiles.empty? then
+      	      # now diff the found files and the examined files to see if
+      	      # something has been deleted
+      	      allFoundFiles = @foundFiles.keys()
+      	      allExaminedFiles = alreadyExamined.keys()
+      	      intersection = allFoundFiles - allExaminedFiles
+      	      intersection.each { |fileName|
+                  # callback
+                  block.call(DELETED, fileName)
+                  # remove deleted file from the foundFiles list
+                  @foundFiles.delete(fileName)
+                }	  
+              end
+            else
+              @firstLoad = false
+            end
           end
-        else
-          @firstLoad = false
-        end
-      end
 
-        # go to sleep
-        sleep(@sleepTime)
-          end
-        }
+          # go to sleep
+          sleep(@sleepTime)
+        end
+      }
     
     # set the watch thread priority
     @watchThread.priority = @priority
@@ -226,79 +227,72 @@ class FileSystemWatcher
 
       # dont examine the same file 2 times
       if not alreadyExamined.has_key?(fullFileName) then
-	# we cant do much if the file isnt readable anyway
-	if File.readable?(fullFileName) then
-	  # set that we have seen this file
-	  alreadyExamined[fullFileName] = true
+    	# we cant do much if the file isnt readable anyway
+    	  if File.readable?(fullFileName) then
+      	  # set that we have seen this file
+      	  alreadyExamined[fullFileName] = true
 	  
-	  # get the file info
-	  modTime, size = File.mtime(fullFileName), File.size(fullFileName)
+      	  # get the file info
+      	  modTime, size = File.mtime(fullFileName), File.size(fullFileName)
 	  
-	  # on the first iteration just load all of the files into the foundList
-	  if @firstLoad then
-	    @foundFiles[fullFileName] = FSWatcher::FoundFile.new(fullFileName, modTime, size, false, @useMD5)
-	  else
-	    # see if we have found this file already
-	    foundFile = @foundFiles[fullFileName]
+      	  # on the first iteration just load all of the files into the foundList
+      	  if @firstLoad then
+      	    @foundFiles[fullFileName] = FSWatcher::FoundFile.new(fullFileName, modTime, size, false, @useMD5)
+      	  else
+      	    # see if we have found this file already
+      	    foundFile = @foundFiles[fullFileName]
 
-	    if foundFile then
-	      
-	      # if a file is marked as new, we still need to make sure it isnt still
-	      # being written to. we do this by checking the file sizes.
-	      if foundFile.isNew? then
+      	    if foundFile then
+        	    # if a file is marked as new, we still need to make sure it isnt still
+        	    # being written to. we do this by checking the file sizes.
+      	    
+        	    if foundFile.isNew? then
+              		# if the file size is the same then it is probably done being written to
+              		# unless the writer is really slow
+              		if size == foundFile.size then		  
+              		  # callback
+              		  block.call(CREATED, fullFileName)
+		  
+              		  # mark this file as a changed file now
+              		  foundFile.updateModTime(modTime)
+		  
+              		  # generate the md5 for the file since we know it is done
+              		  # being written to
+              		  foundFile.genMD5() if @useMD5
+              		else
+              		  # just update the size so we can check again at the next iteration
+              		  foundFile.updateSize(size)
+              		end
 		
-		# if the file size is the same then it is probably done being written to
-		# unless the writer is really slow
-		if size == foundFile.size then		  
+        	    elsif modTime > foundFile.modTime then
 
-		  # callback
-		  block.call(CREATED, fullFileName)
-		  
-		  # mark this file as a changed file now
-		  foundFile.updateModTime(modTime)
-		  
-		  # generate the md5 for the file since we know it is done
-		  # being written to
-		  foundFile.genMD5() if @useMD5
-		  
-		else
-		  
-		  # just update the size so we can check again at the next iteration
-		  foundFile.updateSize(size)
-		  
-		end
-		
-	      elsif modTime > foundFile.modTime then
+          	      # if the mod times are different on files we already have
+                  # found this is an update		
+                  willYield = true
 
-  	      # if the mod times are different on files we already have
-          # found this is an update		
-          willYield = true
+                  # if we are using md5's then compare them
+                  if @useMD5 then
+                    filesMD5 = FSWatcher.genFileMD5(fullFileName)
+                    if filesMD5 && foundFile.md5 then
+                      if filesMD5.to_s == foundFile.md5.to_s then
+                        willYield = false
+                      end
+                    end
+                    # if we are yielding then the md5s are dif so
+                    # update the cached md5 value
+                    foundFile.setMD5(filesMD5) if willYield
+                  end
+                  block.call(MODIFIED, fullFileName) if willYield		
+                  foundFile.updateModTime(modTime)
+      	      end
 
-          # if we are using md5's then compare them
-          if @useMD5 then
-            filesMD5 = FSWatcher.genFileMD5(fullFileName)
-            if filesMD5 && foundFile.md5 then
-              if filesMD5.to_s == foundFile.md5.to_s then
-                willYield = false
-              end
-            end
-
-            # if we are yielding then the md5s are dif so
-            # update the cached md5 value
-            foundFile.setMD5(filesMD5) if willYield
-
-          end
-
-          block.call(MODIFIED, fullFileName) if willYield		
-          foundFile.updateModTime(modTime)
-	      end
-	    else
-	      # this is a new file for our list. dont update the md5 here since
-	      # the file might not yet be done being written to
-	      @foundFiles[fullFileName] = FSWatcher::FoundFile.new(fullFileName, modTime, size)
-	    end
-	  end
-	end
+      	    else
+      	      # this is a new file for our list. dont update the md5 here since
+      	      # the file might not yet be done being written to
+      	      @foundFiles[fullFileName] = FSWatcher::FoundFile.new(fullFileName, modTime, size)
+      	    end
+      	  end
+      	end
       end
     }
   end

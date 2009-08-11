@@ -10,16 +10,13 @@ module Doozer
       # load routes
       load_routes
       
-      # load the application coontrollers, views, and helpers
+      # load the application models, coontrollers, views, and helpers
       load_files
-      
-      # load models
-      load_models
-      
+            
       # attach the file watcher for the mvc/lib/etc in development mode
-      require 'doozer/watcher'; load_watcher if Doozer::Configs.rack_env != :deployment
+      load_watcher if Doozer::Configs.rack_env != :deployment
       
-      p "Doozer racked up..."
+      printf "Doozer racked up...\n"
     end
     
     # This method is called along the rackup chain and maps the request path to the route, controller, and view for the format type.
@@ -112,14 +109,16 @@ module Doozer
     end
     
     def load_files
-      p "Caching files..."
+      # load models
+      load_models
+      printf "Caching files...\n"
       @@controllers = {}
       @@layouts={}
       @@views={}
       @@errors={}
       
       # require helper files and include into Doozer::Partial
-      helper_files = Dir.glob(File.join(APP_PATH,'/app/helpers/*_helper.rb'))      
+      helper_files = Dir.glob(File.join(APP_PATH,'app/helpers/*_helper.rb'))      
       helper_files.each {|f|
         require f
         key = f.split("helpers/")[1].gsub(/.rb/,'')
@@ -127,7 +126,7 @@ module Doozer
       }
       
       # cache contoller classes
-      controller_files = Dir.glob(File.join(APP_PATH,'/app/controllers/*_controller.rb'))
+      controller_files = Dir.glob(File.join(APP_PATH,'app/controllers/*_controller.rb'))
       # we need to load the application_controller first since this might not be the first in the list...
       if controller_files.length > 0
         i=0
@@ -161,7 +160,7 @@ module Doozer
       }
       
       # cache layout erb's
-      layout_files = Dir.glob(File.join(APP_PATH,'/app/views/layouts/*.erb'))
+      layout_files = Dir.glob(File.join(APP_PATH,'app/views/layouts/*.erb'))
       layout_files.each {|f|
         key = f.split("layouts/")[1].split(".html.erb")[0].gsub(/.xml.erb/, '_xml').gsub(/.json.erb/, '_json')
         results = []
@@ -172,7 +171,7 @@ module Doozer
       #lood 404 and 500 pages if they exist
       pnf = Doozer::Configs.page_not_found_url
       if pnf
-        file = File.join(APP_PATH,"/#{pnf}")
+        file = File.join(APP_PATH,"#{pnf}")
         results = []
         File.new(file, "r").each { |line| results << line }
         @@errors[404] = results.join("")
@@ -181,7 +180,7 @@ module Doozer
       end
       ise = Doozer::Configs.internal_server_error_url
       if ise
-        file = File.join(APP_PATH,"/#{ise}")
+        file = File.join(APP_PATH,"#{ise}")
         results = []
         File.new(file, "r").each { |line| results << line }
         @@errors[500] = results.join("")
@@ -191,7 +190,7 @@ module Doozer
       
       @@controllers.each_key { | key |
         # p key.inspect
-        files = Dir.glob(File.join(APP_PATH,"/app/views/#{key.to_s}/*.erb"))
+        files = Dir.glob(File.join(APP_PATH,"app/views/#{key.to_s}/*.erb"))
         files.each { | f |
           #!!!don't cache partials here!!!
           view = f.split("#{key.to_s}/")[1].split(".erb")[0].gsub(/\./,'_')
@@ -212,22 +211,29 @@ module Doozer
     end
 
     def load_models
-      Dir.glob(File.join(APP_PATH,'/app/models/*.rb')).each { | model | require model }
+      printf "Loading models...\n"
+      Dir.glob(File.join(APP_PATH,'app/models/*.rb')).each { | model | 
+        require model 
+      }
     end
   
     def load_watcher
-      p "All along the watchtower..."
+      require 'doozer/watcher'
+      
+      printf "All along the watchtower...\n"
       watcher = FileSystemWatcher.new()
+      
       # watcher.addDirectory(File.join(File.dirname(__FILE__),'../doozer/'), "*.rb")
-      watcher.addDirectory(File.join(APP_PATH,'/app/'), "**/*")
-      watcher.addDirectory(File.join(APP_PATH,'/app/'), "**/**/*")
-      watcher.addDirectory(File.join(APP_PATH,'/config/'), "*.*")
-      watcher.addDirectory(File.join(APP_PATH,'/lib/'), "*.*")
-      watcher.addDirectory(File.join(APP_PATH,'/static/'), "*.*")
-      watcher.addDirectory(File.join(APP_PATH,'/static/'), "**/**/*")
+      watcher.addDirectory( APP_PATH + '/app/', "**/*")
+      watcher.addDirectory( APP_PATH + '/app', "**/**/*")
+      watcher.addDirectory( APP_PATH + '/config/', "*.*")
+      watcher.addDirectory( APP_PATH + '/lib/', "*.*")
+      watcher.addDirectory( APP_PATH + '/static/', "*.*")
+      watcher.addDirectory( APP_PATH + '/static/', "**/**/*")
+
 
       watcher.sleepTime = 1
-      watcher.start { |status,file|
+      watcher.start { |status, file|
         if(status == FileSystemWatcher::CREATED) then
             puts "created: #{file}"
             load_files
@@ -242,7 +248,10 @@ module Doozer
             Doozer::Partial.clear_loaded_partials
         end
       }
-      #don't join the thread it messes up rackup threading watcher.join() 
+      #don't join the thread it messes up rackup threading watcher.join()
+      # p watcher.isStarted?
+      # p watcher.isStopped?
+      # p watcher.foundFiles.inspect
     end
   
     def handler(key)

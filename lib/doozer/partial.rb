@@ -56,7 +56,7 @@ module Doozer
           partial = Doozer::Partial.new(erb, locals, route)
           partial.bind()
       else
-        p "no partial exists for #{file}"
+        printf "--no partial exists for #{file}\n"
       end
     end
     

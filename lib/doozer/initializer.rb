@@ -70,6 +70,12 @@ module Doozer
       end
     end
 
+    
+    def self.console(env)
+      self.boot(env)
+      app = Doozer::App.new(env)
+    end
+    
     # Primary hook for extending/overriding ORM. Code block is pushed onto an array which allows for multiple hooks throughtout different files.
     # 
     # &block - code to execute after ORM is intialized

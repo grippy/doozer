@@ -19,7 +19,7 @@ module Doozer
         # sort routes here
         @@parts.sort! do |a, b| a[1].length <=> b[1].length end
         @@parts.reverse!
-        p "Routes drawn and sorted..."
+        printf "Routes drawn and sorted...\n"
         # @@parts.each { | i | p i[1] }
       end
       def self.add(name=nil, path=nil, args=nil)

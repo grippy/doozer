@@ -13,8 +13,8 @@ module Doozer
    
    # Rack refers to production as deployment.
    def self.load(rack_env)
-      p "APP_ROOT: #{APP_PATH}" 
-      p "Loading configs for #{rack_env}"
+      printf "APP_ROOT: #{APP_PATH}\n" 
+      printf "Loading configs for #{rack_env}\n"
       
       # TODO: remove this and replace with APP_PATH
       @@env_path = Dir.pwd 
@@ -42,13 +42,13 @@ module Doozer
       begin
        @@config[:database] = Configs.symbolize_keys( YAML.load(File.read(File.join(APP_PATH,'config/database.yml'))) )
       rescue
-       p "Failed to load config/database.yml"
+       printf "--Failed to load config/database.yml \n"
       end
 
       begin
        @@config[:app] = Configs.symbolize_keys( YAML.load(File.read(File.join(APP_PATH,'config/app.yml'))) )
       rescue
-       p "Failed to load config/app.yml"
+       printf "--Failed to load config/app.yml\n"
       end
    end
 

@@ -2,9 +2,6 @@
 require 'rubygems'
 require 'doozer'
 
-#--load initializers
-# require 'doozer/initializer'
-
 #--boot it up
 Doozer::Initializer.boot(env)
 
