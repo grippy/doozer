@@ -1,5 +1,5 @@
 module Doozer
-  class Redirect < Exception
+  class Redirect < RuntimeError
     attr_accessor :url
     attr_reader :status
     

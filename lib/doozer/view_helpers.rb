@@ -60,6 +60,10 @@ module Doozer
       "<link #{hash_to_props(prop)} href=\"#{path}\" />"
     end
 
+    def feed(opt={}, prop={})
+      "<link #{hash_to_props(prop)} href=\"#{url(opt)}\" />"
+    end
+
     def javascript(path, prop={})
       path = timestamp_path(path)
       prop[:type] = 'text/javascript' if prop[:type].nil?

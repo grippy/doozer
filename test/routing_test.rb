@@ -47,17 +47,17 @@ class RoutingTest < RoutingHelper
     
     should "raise an error if we try adding these routes" do
       # add route with a duplicate name
-      assert_raise Doozer::Exception::Route do
+      assert_raise Doozer::Exceptions::Route do
         Doozer::Routing::Routes.add(:index, '/some_path', {:controller=>'index', :action=>'index', :status=>200})
       end
       
       # add route with a name of type string
-      assert_raise Doozer::Exception::Route do
+      assert_raise Doozer::Exceptions::Route do
         Doozer::Routing::Routes.add('index', '/', {:controller=>'index', :action=>'index', :status=>200})
       end
 
       # add route with a duplicate path
-      assert_raise Doozer::Exception::Route do
+      assert_raise Doozer::Exceptions::Route do
         Doozer::Routing::Routes.add(:duplicate_path_fail, '/', {:controller=>'index', :action=>'index', :status=>200})
       end
     end

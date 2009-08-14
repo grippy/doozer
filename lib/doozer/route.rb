@@ -38,9 +38,9 @@ module Doozer
             if name != :magic
               path = '/' if path == ''
               
-              raise Doozer::Exception::Route.new("Route name must be a symbol. #{name} given.") if not name.kind_of? Symbol
-              raise Doozer::Exception::Route.new("Route already exists with the name of #{name}.") if @@dict[name]
-              @@parts.each { |p| raise Doozer::Exception::Route.new("Route already defined with a path of '#{path}'") if p[1] == path }
+              raise Doozer::Exceptions::Route.new("Route name must be a symbol. #{name} given.") if not name.kind_of? Symbol
+              raise Doozer::Exceptions::Route.new("Route already exists with the name of #{name}.") if @@dict[name]
+              @@parts.each { |p| raise Doozer::Exceptions::Route.new("Route already defined with a path of '#{path}'") if p[1] == path }
               parts = [name, path, args]
               # p parts.inspect
               args[:format] = format

@@ -23,7 +23,7 @@ module Doozer
     autoload :Logger,       "doozer/logger"
   end
 
-  module Exception
+  module Exceptions
     autoload :Route,        "doozer/exceptions"
   end
   

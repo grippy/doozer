@@ -37,6 +37,7 @@ Gem::Specification.new do |s|
      "lib/doozer/app.rb",
      "lib/doozer/configs.rb",
      "lib/doozer/controller.rb",
+     "lib/doozer/exceptions.rb",
      "lib/doozer/extend.rb",
      "lib/doozer/initializer.rb",
      "lib/doozer/lib.rb",
@@ -91,6 +92,34 @@ Gem::Specification.new do |s|
      "templates/skeleton/test/fixtures/setup.rb",
      "templates/skeleton/test/setup.rb",
      "test/doozer_test.rb",
+     "test/project/Rakefile",
+     "test/project/app/controllers/application_controller.rb",
+     "test/project/app/controllers/index_controller.rb",
+     "test/project/app/helpers/application_helper.rb",
+     "test/project/app/views/global/_header.html.erb",
+     "test/project/app/views/global/_navigation.html.erb",
+     "test/project/app/views/index/index.html.erb",
+     "test/project/app/views/layouts/default.html.erb",
+     "test/project/config/app.yml",
+     "test/project/config/database.yml",
+     "test/project/config/environment.rb",
+     "test/project/config/rack.rb",
+     "test/project/config/routes.rb",
+     "test/project/script/cluster",
+     "test/project/script/console",
+     "test/project/script/migrate",
+     "test/project/script/task",
+     "test/project/script/test",
+     "test/project/static/404.html",
+     "test/project/static/500.html",
+     "test/project/static/css/style.css",
+     "test/project/static/favicon.ico",
+     "test/project/static/js/application.js",
+     "test/project/static/js/jquery-1.3.min.js",
+     "test/project/static/robots.txt",
+     "test/project/test/fixtures/setup.rb",
+     "test/project/test/setup.rb",
+     "test/routing_test.rb",
      "test/test_helper.rb"
   ]
   s.has_rdoc = true
@@ -101,6 +130,15 @@ Gem::Specification.new do |s|
   s.summary = %q{A little MVC framework for Rack applications.}
   s.test_files = [
     "test/doozer_test.rb",
+     "test/project/app/controllers/application_controller.rb",
+     "test/project/app/controllers/index_controller.rb",
+     "test/project/app/helpers/application_helper.rb",
+     "test/project/config/environment.rb",
+     "test/project/config/rack.rb",
+     "test/project/config/routes.rb",
+     "test/project/test/fixtures/setup.rb",
+     "test/project/test/setup.rb",
+     "test/routing_test.rb",
      "test/test_helper.rb"
   ]
 

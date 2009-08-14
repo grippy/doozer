@@ -1,5 +1,5 @@
 module Doozer
-  module Exception
+  module Exceptions
     
     class Route < RuntimeError
       def initialize(message)
