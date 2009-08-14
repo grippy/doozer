@@ -19,7 +19,7 @@ Formats
 Adding formats symbolzes automatically creates new routes for the formats symbols provided. 
 The appropriate content-type is returned with the response.
 You can access the format with @format in your controllers.
-Supported formats are: :json, :js, :xml, :rss, :atom
+Supported formats are: :json, :js, :xml, :rss
 All routes default to :html format
 
 Example:
@@ -32,7 +32,7 @@ Example:
   map.add :format_example, '/format_example', {:controller=>'index', :action=>'format_example', :status=>200} 
   :json format
   map.add :format_example_json, '/format_example.json', {:controller=>'index', :action=>'format_example', :status=>200}
-  :xml format
+  :xml formate
   map.add :format_example_xml, '/format_example.xml', {:controller=>'index', :action=>'format_example', :status=>200}
   
 
@@ -64,6 +64,9 @@ Doozer::Routing::Routes.draw do | map |
           :path w/ tokens, 
           :options={:controller, :action, :status, :formats=>[:json, :xml, :js, etc], :app=>Class.new} 
           """
-  map.add :index, '', {:controller=>'index', :action=>'index', :status=>200}
+  map.add :index, '', {:controller=>'index', :action=>'index'}
+  map.add :index_with_token, '/:token', {:controller=>'index', :action=>'index_with_token', :status=>200}
+  map.add :format_test, '/format_test/:id/:name', {:controller=>'index', :action=>'format_test', :status=>200, :formats=>[:xml, :json]}
+  map.add :recent, '/recent', {:controller=>'index', :action=>'recent', :status=>200, :formats=>[:rss]}
 
 end

@@ -167,7 +167,6 @@ end
       }
     end
     
-    
     def self.migrate(orm, name)
       return if help?(name, :migrate)
     
@@ -305,7 +304,6 @@ end
       end
       return false
     end
-    
     def self.help(action=nil)
       h = ""
       case action

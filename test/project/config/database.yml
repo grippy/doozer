@@ -1,0 +1,25 @@
+# uncomment once orm gem is installed
+# name of the orm gem you'd like to use: active_record || data_mapper || sequel
+orm: active_record
+
+# uncomment once schema is created
+development:
+#     adapter: mysql
+#     database: app_development
+#     username: root
+#     password:
+#     host: localhost
+
+production:
+#     adapter: mysql
+#     database: app_production
+#     username: root
+#     password:
+#     host: localhost
+
+test:
+    adapter: mysql
+    database: doozer_test
+    username: root
+    password:
+    host: localhost

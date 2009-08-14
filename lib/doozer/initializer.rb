@@ -14,9 +14,11 @@ module Doozer
     @@before_rackup = []
 
     # env - :development, :deployment, or :test
-    def self.boot(env)
+    # app_path - optional path which overrides where the application is loaded from. Defaults to the Dir.pwd of script loading this file
+    def self.boot(env, app_path=nil)
       #--load configs
       require 'doozer/configs'
+      Doozer::Configs.set_app_path(app_path)
       Doozer::Configs.load(env)
       
       #--load orm
@@ -64,16 +66,16 @@ module Doozer
     # end
     def self.environment
       begin
-        require "#{Dir.pwd}/config/environment"
+        require "#{Doozer::Configs.app_path}/config/environment"
       rescue => e
         Doozer::Configs.logger.error(e)
       end
     end
 
-    
-    def self.console(env)
-      self.boot(env)
-      app = Doozer::App.new(env)
+    # TODO: test this again
+    def self.console(env, app_path=nil)
+      self.boot(env, app_path=app_path)
+      app = Doozer::App.new(args={})
     end
     
     # Primary hook for extending/overriding ORM. Code block is pushed onto an array which allows for multiple hooks throughtout different files.

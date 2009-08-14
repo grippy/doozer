@@ -24,7 +24,7 @@ module Doozer
     include Doozer::Util::Logger
     include Doozer::ViewHelpers
     
-    APP_PATH = Dir.pwd
+    # APP_PATH = Dir.pwd
     @@partials={}
     
     def initialize(erb, locals, route)
@@ -74,7 +74,7 @@ module Doozer
 
     # Load and cache partial ERB template with the given file_name.
     def self.load_partial(name)
-      file = File.join(APP_PATH,"/app/views/#{name}.html.erb")
+      file = File.join(app_path,"app/views/#{name}.html.erb")
       results = []
       begin
         File.new(file, "r").each { |line| results << line }

@@ -1,0 +1,108 @@
+<h2><span>Project Details</span></h2>
+<p><span>Doozer is a <%=link('Rackup', 'http://rack.rubyforge.org/') %> application.</span></p>
+
+<ul>
+	<li><span>Bare bones, lightweight, MVC framework.</span></li>
+	<li><span>Map routes to controller actions or completely separate applications.</span></li>
+	<li><span>ORM agnostic. use activerecord, data mapper, or sequel</span></li>
+	<li><span>Easy to define static directories</span></li>
+	<li><span>View Helpers for controllers</span></li>
+	<li><span>Layouts and Partials</span></li>
+</ul>
+
+<h3>Intro</h3>
+	<h4>Inspiration</h4>
+
+<h3>Requirements</h3>
+	<h4>Rackup</h4>
+	<p>Rackup  and its dependencies:</p>
+	
+<h3>File Structure</h3>
+<p>This should look similar to rails</p>
+	<h4>Layout</h4>
+
+<h3>Configs</h3>
+	<h4>Static</h4>
+	<h4>ORM</h4>
+	<h4>Clusters</h4>
+		<p>This needs to change names to something better. Maybe Server?</p>
+<h3>Environment</h3>
+	<h4>Load Hooks</h4>
+	<h4>Settings</h4>
+		
+<h3>Load Order</h3>
+	
+<h3>Routes</h3>
+	<h4>Parameters</h4>
+	<h4>Magic</h4>
+		<p>A magic route is similar to "/:controller/:action" in rails.</p>
+		<p>Right now, these are tuned off in favor of explicitly having to declare them. Formats aren't extended to them yet. :()</p>
+	<h4>Bypassing Controllers</h4>
+		<p>You can declare a Rackup compatible app to call instead of a Doozer::Controller.</p>
+		<p>See config/routes.rb for more info.</p>
+	<h4>Layouts</h4>
+		<p>By default all html routes use the default.html.erb layout generated with the initial scaffolding.</p>
+		<p>Declare a route layout of :layout=>:view_name to override the default behavior.</p>
+		
+
+<h3>App</h3>
+	<h4>Security</h4>
+		<h5>Post Requests</h5>
+			<h6>Authenticity Token</h6>
+		
+	<h4>Model</h4>
+	<h4>View</h4>
+		<h5>Route Tokens</h5>
+	<h4>Controller</h4>
+		<h5>Callbacks</h5>
+			As a controller is initialized, rendered, and finalized, you have the ability to influence the call stack.
+			
+			<h6>after_initialize</h6>
+			<p>This is called after the controller is matched to the route and intialized.
+			<p>Use this hook to customize which actions shouldn't call before_filter and after_filter.</p>
+				<code>
+					@before_filter={:exclude=>[:action1, :action2]}
+					@after_filter={:exclude=>[:action1, :action2]}
+				</code>
+			<h6>before_filter</h6>
+			<p>By default all actions call this method. You can override it in your controller class by declaring:</p>
+				<code>
+					def before_filter
+						#code goes here....
+					end
+				</code>
+			<h6>after_filter</h6>
+			<p>By default all actions call this method. You can override it in your controller class by declaring:</p>
+				<code>
+					def after_filter
+						#code goes here....
+					end
+				</code>
+		<h5>Params</h5>
+		<h5>Route Tokens</h5>
+			<p>All route tokens are available as instance variables.</p>
+			<p>A route token of :id is available in an action and it's view as @id. You must pass this variable into a partial as a local variable.</p>
+		
+<h3>View Helpers</h3>
+	<h4>Redirects</h4>
+	<h4>Flash</h4>
+	<h4>Partial</h4>
+	<h4>Layout</h4>
+	<h4>Session</h4>
+
+<h3>Generators</h3>
+	<h4>MVC Files</h4>
+
+<h3>Scaffold</h3>
+	<h4>Building Project</h4>
+
+<h3>Static</h3>
+
+<h3>Testing</h3>
+
+<h3>Tasks</h3>
+
+<h3>App Start</h3>
+	<h4>Config</h4>
+	<h4>Start Command</h4>
+		<h5>Environments</h5>

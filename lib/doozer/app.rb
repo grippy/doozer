@@ -1,6 +1,6 @@
 module Doozer
   class App
-    APP_PATH = Dir.pwd
+
     include Doozer::Util::Logger
     attr_accessor :options
 
@@ -118,7 +118,7 @@ module Doozer
       @@errors={}
       
       # require helper files and include into Doozer::Partial
-      helper_files = Dir.glob(File.join(APP_PATH,'app/helpers/*_helper.rb'))      
+      helper_files = Dir.glob(File.join(app_path,'app/helpers/*_helper.rb'))      
       helper_files.each {|f|
         require f
         key = f.split("helpers/")[1].gsub(/.rb/,'')
@@ -126,7 +126,7 @@ module Doozer
       }
       
       # cache contoller classes
-      controller_files = Dir.glob(File.join(APP_PATH,'app/controllers/*_controller.rb'))
+      controller_files = Dir.glob(File.join(app_path,'app/controllers/*_controller.rb'))
       # we need to load the application_controller first since this might not be the first in the list...
       if controller_files.length > 0
         i=0
@@ -160,9 +160,9 @@ module Doozer
       }
       
       # cache layout erb's
-      layout_files = Dir.glob(File.join(APP_PATH,'app/views/layouts/*.erb'))
+      layout_files = Dir.glob(File.join(app_path,'app/views/layouts/*.erb'))
       layout_files.each {|f|
-        key = f.split("layouts/")[1].split(".html.erb")[0].gsub(/.xml.erb/, '_xml').gsub(/.json.erb/, '_json')
+        key = f.split("layouts/")[1].split(".html.erb")[0].gsub(/.xml.erb/, '_xml').gsub(/.json.erb/, '_json').gsub(/.js.erb/, '_js').gsub(/.rss.erb/, '_rss').gsub(/.atom.erb/, '_atom')
         results = []
         File.new(f, "r").each { |line| results << line }
         @@layouts[key.to_sym] = ERB.new(results.join(""))
@@ -171,7 +171,7 @@ module Doozer
       #lood 404 and 500 pages if they exist
       pnf = Doozer::Configs.page_not_found_url
       if pnf
-        file = File.join(APP_PATH,"#{pnf}")
+        file = File.join(app_path,"#{pnf}")
         results = []
         File.new(file, "r").each { |line| results << line }
         @@errors[404] = results.join("")
@@ -180,7 +180,7 @@ module Doozer
       end
       ise = Doozer::Configs.internal_server_error_url
       if ise
-        file = File.join(APP_PATH,"#{ise}")
+        file = File.join(app_path,"#{ise}")
         results = []
         File.new(file, "r").each { |line| results << line }
         @@errors[500] = results.join("")
@@ -190,7 +190,7 @@ module Doozer
       
       @@controllers.each_key { | key |
         # p key.inspect
-        files = Dir.glob(File.join(APP_PATH,"app/views/#{key.to_s}/*.erb"))
+        files = Dir.glob(File.join(app_path,"app/views/#{key.to_s}/*.erb"))
         files.each { | f |
           #!!!don't cache partials here!!!
           view = f.split("#{key.to_s}/")[1].split(".erb")[0].gsub(/\./,'_')
@@ -207,12 +207,12 @@ module Doozer
     end
   
     def load_routes
-      require File.join(APP_PATH, 'config/routes')
+      require File.join(app_path, 'config/routes')
     end
 
     def load_models
       printf "Loading models...\n"
-      Dir.glob(File.join(APP_PATH,'app/models/*.rb')).each { | model | 
+      Dir.glob(File.join(app_path,'app/models/*.rb')).each { | model | 
         require model 
       }
     end
@@ -224,12 +224,12 @@ module Doozer
       watcher = FileSystemWatcher.new()
       
       # watcher.addDirectory(File.join(File.dirname(__FILE__),'../doozer/'), "*.rb")
-      watcher.addDirectory( APP_PATH + '/app/', "**/*")
-      watcher.addDirectory( APP_PATH + '/app', "**/**/*")
-      watcher.addDirectory( APP_PATH + '/config/', "*.*")
-      watcher.addDirectory( APP_PATH + '/lib/', "*.*")
-      watcher.addDirectory( APP_PATH + '/static/', "*.*")
-      watcher.addDirectory( APP_PATH + '/static/', "**/**/*")
+      watcher.addDirectory( app_path + '/app/', "**/*")
+      watcher.addDirectory( app_path + '/app', "**/**/*")
+      watcher.addDirectory( app_path + '/config/', "*.*")
+      watcher.addDirectory( app_path + '/lib/', "*.*")
+      watcher.addDirectory( app_path + '/static/', "*.*")
+      watcher.addDirectory( app_path + '/static/', "**/**/*")
 
 
       watcher.sleepTime = 1
@@ -258,6 +258,10 @@ module Doozer
       return Object.const_get(@@controllers[key])
     end
             
+    def app_path
+      Doozer::Configs.app_path
+    end
+    
     def self.controllers
       @@controllers
     end

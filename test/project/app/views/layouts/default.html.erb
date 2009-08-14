@@ -1,0 +1,23 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+		<title>Doozer! Build Something</title>
+		<%=metatags()%>
+		<link rel="icon" href="/favicon.ico" />
+		<%=stylesheet('/css/style.css')%>
+		<%=javascript('/js/jquery-1.3.min.js')%>
+		<%=javascript('/js/application.js')%>
+	</head>
+	<body>
+		<%=partial('global/header')%>
+		<%if @flash[:info]%>
+			<div class="msg info"><%=@flash[:info]%></div>
+		<%end%>
+		<%if @flash[:error]%>
+			<div class="msg error"><%=@flash[:error]%></div>
+		<%end%>
+		<%=@view[:body]%>
+	</body>
+</html>
+<%=@view[:timestamp]%>

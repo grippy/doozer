@@ -22,6 +22,9 @@ module Doozer
         printf "Routes drawn and sorted...\n"
         # @@parts.each { | i | p i[1] }
       end
+      
+      
+      # An empty path defaults to the a path of '/'
       def self.add(name=nil, path=nil, args=nil)
         # p name
         # p path
@@ -33,6 +36,11 @@ module Doozer
           for format in formats
             args.delete(:formats)
             if name != :magic
+              path = '/' if path == ''
+              
+              raise Doozer::Exception::Route.new("Route name must be a symbol. #{name} given.") if not name.kind_of? Symbol
+              raise Doozer::Exception::Route.new("Route already exists with the name of #{name}.") if @@dict[name]
+              @@parts.each { |p| raise Doozer::Exception::Route.new("Route already defined with a path of '#{path}'") if p[1] == path }
               parts = [name, path, args]
               # p parts.inspect
               args[:format] = format
@@ -177,6 +185,9 @@ module Doozer
       attr_accessor :name, :path, :controller, :action, 
                     :layout, :status, :content_type, :tokens, 
                     :grouping, :app, :format, :view, :view_path
+                    
+                    
+      # 
       def initialize(route)
         #p "Doozer::Route#new: #{route}"
         args = route[2]
@@ -207,7 +218,7 @@ module Doozer
         path = '/' if path == ''
         @path = (@format == :html) ? path : "#{path}.#{format}"
         @name = (@format == :html) ? route[0] : "#{route[0]}_#{format.to_s}".to_sym
-        @layout = :none if @format != :html and @layout == 'default'
+        @layout = "default_#{@format.to_s}".to_sym if @format != :html and @layout == 'default'
         
         @view = "#{@action}_#{@format.to_s}"
         @view_path = "#{@controller}/#{@action}.#{@format.to_s}.erb"
@@ -224,12 +235,13 @@ module Doozer
                 # part = '(?P<'+token+'>.)'
                 # part = '(\.*)'
                 # part = '(\w*)'
-                part = '([a-zA-Z0-9,-.%]*)' # this picks up all allowable route tokens (a-zA-Z0-9,-.%)
+                part = '([a-zA-Z0-9,-.%_~;]*)' # this picks up all allowable route tokens (a-zA-Z0-9,-.%)
                 @tokens.push(token)
               end
               grouping.push(part)
           end
           out = "^#{grouping.join('/')}"
+          out += ".#{@format.to_s}" if @format != :html # we need to include the 
           @grouping = Regexp.compile(out)
         else
           #handle default index route
@@ -237,11 +249,15 @@ module Doozer
         end
       end
     
+      # TODO: NEED TO CLEAN THIS UP WITH SOME UNIT TESTS
       def match(path)
         # p "#{path} vs #{@path}" 
         # p path =~ @grouping
-        #short-circut for root
+        # short-circut for root
         return false if path == '/' and @path != '/' #handles root condition
+        # short-circut for exact match with no tokens
+        return true if path == @path
+        # test for tokens
         pass=(path =~ @grouping) == 0 ? true : false
         # p @tokens.inspect if pass
         if @tokens.empty?; pass=false if @path != path; end #handles root condition '/'
@@ -252,6 +268,8 @@ module Doozer
       def extra_params(path)
         hashish = {}
         params = @grouping.match(path)
+        # make sure to remove the format from the last token
+        @tokens.last.gsub!(Regexp.compile("\.#{@format.to_s}$"), '') if @format != :html if not @tokens.empty?
         i = 1
         for token in @tokens
           hashish[token.to_sym] = params[i]

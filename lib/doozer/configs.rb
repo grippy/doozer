@@ -6,18 +6,16 @@ module Doozer
   
   # This is the main Configs class which loads root/config/app.yml and root/config/database.yml
   #
-  # It also provides a few helper methods like logger, env_path, base_url and app_name
+  # It also provides a few helper methods like logger, app_path, base_url and app_name
   class Configs
-   APP_PATH = Dir.pwd
    @@possible_orm = [:active_record, :data_mapper, :sequel]
+   @@app_path = nil
    
    # Rack refers to production as deployment.
    def self.load(rack_env)
-      printf "APP_ROOT: #{APP_PATH}\n" 
+      printf "Application path: #{app_path}\n" 
       printf "Loading configs for #{rack_env}\n"
       
-      # TODO: remove this and replace with APP_PATH
-      @@env_path = Dir.pwd 
       @@config = Config::CONFIG
       rack_env = (rack_env.kind_of? String) ? rack_env.to_sym : rack_env
       case rack_env
@@ -33,20 +31,20 @@ module Doozer
       if [:development, :test].include?(rack_env)
         @@logger = Logger.new(STDOUT)
       else
-        @@logger = Logger.new("#{APP_PATH}/log/#{rack_env}.log")
+        @@logger = Logger.new("#{app_path}/log/#{rack_env}.log")
       end
 
       @@config[:rack_env] = rack_env
       # p ":rack_env set to #{@@config[:rack_env]}"
 
       begin
-       @@config[:database] = Configs.symbolize_keys( YAML.load(File.read(File.join(APP_PATH,'config/database.yml'))) )
+       @@config[:database] = Configs.symbolize_keys( YAML.load(File.read(File.join(app_path,'config/database.yml'))) )
       rescue
        printf "--Failed to load config/database.yml \n"
       end
 
       begin
-       @@config[:app] = Configs.symbolize_keys( YAML.load(File.read(File.join(APP_PATH,'config/app.yml'))) )
+       @@config[:app] = Configs.symbolize_keys( YAML.load(File.read(File.join(app_path,'config/app.yml'))) )
       rescue
        printf "--Failed to load config/app.yml\n"
       end
@@ -57,10 +55,15 @@ module Doozer
      @@logger
    end
    
+   def self.set_app_path(path=nil)
+     @@app_path = path || Dir.pwd
+   end
+
    # This is the file path the app was loaded under. Dir.pwd moves to root in daemon mode so we cache this.
-   def self.env_path
-     @@env_path
-   end   
+   def self.app_path
+     set_app_path if @@app_path.nil?
+     return @@app_path
+   end
    
    # Take a hash and turn all the keys into symbols
    def self.symbolize_keys(hash=nil)

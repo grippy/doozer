@@ -20,8 +20,13 @@ module Doozer
   end
   
   module Util
-    autoload :Logger,         "doozer/logger"
+    autoload :Logger,       "doozer/logger"
   end
+
+  module Exception
+    autoload :Route,        "doozer/exceptions"
+  end
+  
   autoload :ViewHelpers,    "doozer/view_helpers"
   autoload :Version,        "doozer/version"
   

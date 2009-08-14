@@ -111,6 +111,10 @@ module Doozer
       Doozer::Configs.app_name
     end
 
+    def app_path
+      Doozer::Configs.app_path
+    end
+    
     def ip
       if addr = @env['HTTP_X_FORWARDED_FOR']
         addr.split(',').last.strip

@@ -328,7 +328,7 @@ module Doozer
       elsif args.kind_of? ERB
         view = args
       end
-      view = ERB.new("Missing view for controller#action") if view.nil?
+      view = ERB.new("Missing view for #{@route.view_path}") if view.nil?
       @render_args[:view] = view
     end
   end

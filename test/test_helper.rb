@@ -6,5 +6,21 @@ $LOAD_PATH.unshift(File.join(File.dirname(__FILE__), '..', 'lib'))
 $LOAD_PATH.unshift(File.dirname(__FILE__))
 require 'doozer'
 
-class Test::Unit::TestCase
+class RoutingHelper < Test::Unit::TestCase
+  
+  def setup
+    printf "\n Routing Helper setup... \n"
+    @app_path = File.join(File.dirname(__FILE__), 'project')
+    
+    #--boot
+    Doozer::Initializer.boot(:test, app_path=@app_path)
+    
+    #--instantiate Doozer::App
+    @app = Doozer::App.new(args={})
+    
+  end
+  
+  def default_test
+    
+  end
 end

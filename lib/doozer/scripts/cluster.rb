@@ -11,7 +11,6 @@
 require 'optparse'
 
 APP_PATH = Dir.pwd if APP_PATH.nil?
-
 config =  Doozer::Configs.symbolize_keys( YAML.load(File.read(File.join(APP_PATH,'config/app.yml'))) )
 clusters = Doozer::Configs.symbolize_keys(config[:clusters])
 
@@ -32,7 +31,7 @@ end
 # Automatically starts a test instance of your appserver on http://localhost:5000. (No -E flag is required for this command).
 def test
   cmd = "rackup #{@test_config}" 
-  p "Command: #{cmd} -p 5000 -E test -o 127.0.0.1"
+  printf "Command: #{cmd} -p 5000 -E test -o 127.0.0.1\n"
   system(cmd)
 end
 
@@ -40,23 +39,23 @@ end
 #
 # <b>deployment</b>: Automatically starts a new instance of your appserver for each defined cluster address:port
 def start
-  p "Starting clusters..."
+  printf "Starting clusters...\n"
   for app in @apps
     if @env == :deployment
       #need to check if application has a pid file so we don't start
       pid_file = "#{APP_PATH}/log/doozer.#{app[:port]}.pid"
       raise "pid file already exists for #{pid_file}" if File.exist?(pid_file)
       cmd = "rackup #{@config} -p #{app[:port]} -E #{@env.to_s} -s #{@server} -o #{app[:ip]} #{@daemonize} -P #{pid_file}" 
-      p "Command: #{cmd}"
+      printf "Command: #{cmd}\n"
       system(cmd)
     else
       cmd = "rackup #{@config} -p #{app[:port]} -E #{@env.to_s} -s #{@server} -o #{app[:ip]}" 
-      p "Command: #{cmd}"
+      printf "Command: #{cmd}\n"
       system(cmd)
       break
     end
   end
-  p "Did they start?"
+  printf "Did they start?\n"
   system("ps -aux | grep rackup")
 end
 
@@ -71,21 +70,21 @@ end
 # <b>deployment</b>: Automatically stops all instances of your appserver for each defined cluster address:port
 def stop
   system("ps -aux | grep rackup")
-  p "Stoping clusters..."
+  printf "Stoping clusters...\n"
   for app in @apps
     if @env == :deployment
       pid_file = "#{APP_PATH}/log/doozer.#{app[:port]}.pid"
-      p "Reading pid from #{pid_file}" 
+      printf "Reading pid from #{pid_file}\n" 
       if File.exist?(pid_file)
         File.open(pid_file, 'r'){ | f | 
           pid = f.gets.to_i
-          p "Shutting down process #{pid}"
+          printf "Shutting down process #{pid}\n"
           system("kill -9 #{pid}")
 
         }
         File.delete(pid_file) 
       else
-        p "pid file doesn't exist"
+        printf "pid file doesn't exist\n"
       end
     end
   end
