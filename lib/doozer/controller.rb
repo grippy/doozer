@@ -237,7 +237,7 @@ module Doozer
     
     # Method for setting metatags via Controllers. 
     #
-    # Pass an options hash to meta and all the keys are turned into metatags with the corresponding values.
+    # Pass an options hash to @view[:meta] and all the key/values are turned into metatags with the corresponding values. See Doozer::ViewHelpers#metatags for creating the metatags for view.
     #
     # Example: meta({:description=>'The awesome metatag description is awesome', :keywords=>'awesome, blog, of awesomeness'})
     def meta(opt={})

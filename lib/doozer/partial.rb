@@ -81,7 +81,7 @@ module Doozer
         # TODO: throw error if doesn't exist
         @@partials[name] = ERB.new(results.join(""))
       rescue
-        p "sorry couldn't load partial #{name} (#{file})"
+        printf "sorry couldn't load partial #{name} (#{file}) \n"
       end
     end    
     

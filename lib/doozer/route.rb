@@ -2,6 +2,9 @@ require 'doozer/app'
 
 module Doozer
   module Routing
+    
+    
+    # Route manager for drawing and adding routes.
     class Routes
       @@parts=[] # stored as [route.name, route.path]
       @@dict={}  # route hash
@@ -24,7 +27,7 @@ module Doozer
       end
       
       
-      # An empty path defaults to the a path of '/'
+      # An empty path defaults to a path of '/'
       def self.add(name=nil, path=nil, args=nil)
         # p name
         # p path
@@ -56,6 +59,7 @@ module Doozer
         end
       end
       
+      # sets up default formats to initialize a mapped route
       def self.init_formats(args)
         formats = args[:formats]
         formats = [] if formats.nil?
@@ -64,11 +68,13 @@ module Doozer
         return args
       end
       
+      # return a route by name
       def self.get_by_name(name)
         # p @@dict.inspect
         return @@dict[name]
       end
-
+      
+      # return the route which matches the request path
       def self.match(path)
           # p path
           # p @@cache.inspect
@@ -84,6 +90,7 @@ module Doozer
           return nil
       end
       
+      # caches the request path and with the route.name
       def self.cache_request_path(route,path)
         # p "route cache request path"
         @@cache[path] = route.name
@@ -187,7 +194,8 @@ module Doozer
                     :grouping, :app, :format, :view, :view_path
                     
                     
-      # 
+      # Initializes a route with the following parameters
+      # route - [:name, 'path', {args}]
       def initialize(route)
         #p "Doozer::Route#new: #{route}"
         args = route[2]
@@ -224,7 +232,8 @@ module Doozer
         @view_path = "#{@controller}/#{@action}.#{@format.to_s}.erb"
         regify()
       end
-    
+      
+      # Creates the Regex grouping for matching and parsing route tokens
       def regify
         if (@path.index('/'))
           grouping = []
@@ -249,7 +258,7 @@ module Doozer
         end
       end
     
-      # TODO: NEED TO CLEAN THIS UP WITH SOME UNIT TESTS
+      # Matches a request path against a route.path if a direct match or route.grouping
       def match(path)
         # p "#{path} vs #{@path}" 
         # p path =~ @grouping
@@ -264,7 +273,8 @@ module Doozer
         pass=false if path.split('/').length != @path.split('/').length #handles the root condition /:token
         return pass
       end
-    
+      
+      # Parses route tokens and creates a hash of extra params
       def extra_params(path)
         hashish = {}
         params = @grouping.match(path)

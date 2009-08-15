@@ -3,7 +3,8 @@
   since rackup doesn't call Rackup::Builder in test (in rackup this is 'none') mode
   
 """
-config = 'doozer/rackup/server.ru'
+
+config = File.expand_path(File.join(File.dirname(__FILE__), 'server.ru'))
 env = :test
 cfgfile = File.read(config)
 if cfgfile[/^#\\(.*)/]
