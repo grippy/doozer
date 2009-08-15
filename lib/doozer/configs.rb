@@ -11,7 +11,7 @@ module Doozer
    @@possible_orm = [:active_record, :data_mapper, :sequel]
    @@app_path = nil
    
-   # Rack refers to production as deployment.
+   # Load all the config files for the application. Also instantiates a default application Logger.
    def self.load(rack_env)
       printf "Application path: #{app_path}\n" 
       printf "Loading configs for #{rack_env}\n"
@@ -55,6 +55,9 @@ module Doozer
      @@logger
    end
    
+   # Hook for setting the application path.
+   #
+   # This allows the an application to be initialized from a different location then the project directory.
    def self.set_app_path(path=nil)
      @@app_path = path || Dir.pwd
    end

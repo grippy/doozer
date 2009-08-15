@@ -74,7 +74,7 @@ module Doozer
 
     # Load and cache partial ERB template with the given file_name.
     def self.load_partial(name)
-      file = File.join(app_path,"app/views/#{name}.html.erb")
+      file = File.join(Doozer::Configs.app_path,"app/views/#{name}.html.erb")
       results = []
       begin
         File.new(file, "r").each { |line| results << line }

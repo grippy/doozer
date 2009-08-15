@@ -1,6 +1,5 @@
 module Doozer
   class App
-
     include Doozer::Util::Logger
     attr_accessor :options
 
@@ -108,6 +107,7 @@ module Doozer
       end
     end
     
+    # Load all application files for app/helpers/*, app/views/layouts/*, app/views/* and app/controllers/*
     def load_files
       # load models
       load_models
@@ -205,18 +205,23 @@ module Doozer
         }
       }
     end
-  
+    
+    # Load application routes
     def load_routes
       require File.join(app_path, 'config/routes')
     end
-
+    
+    # Load all application models in app/models
     def load_models
       printf "Loading models...\n"
       Dir.glob(File.join(app_path,'app/models/*.rb')).each { | model | 
         require model 
       }
     end
-  
+    
+    # Loads the file watcher for all application files while in development mode-only.
+    #
+    # This allows you to edit files without restarting the app server to pickup new changes.
     def load_watcher
       require 'doozer/watcher'
       
