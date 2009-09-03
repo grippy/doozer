@@ -5,11 +5,11 @@
 
 Gem::Specification.new do |s|
   s.name = %q{doozer}
-  s.version = "0.1.4"
+  s.version = "0.1.5"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["grippy"]
-  s.date = %q{2009-08-14}
+  s.date = %q{2009-09-03}
   s.default_executable = %q{doozer}
   s.description = %q{This GEM provides a small, barebones framework for creating MVC Rack applications.}
   s.email = %q{gmelton@whorde.com}
@@ -26,7 +26,6 @@ Gem::Specification.new do |s|
      "Rakefile",
      "VERSION",
      "bin/doozer",
-     "doozer.gemspec",
      "lib/doozer.rb",
      "lib/doozer/active_support/array.rb",
      "lib/doozer/active_support/class.rb",
@@ -72,6 +71,7 @@ Gem::Specification.new do |s|
      "templates/skeleton/app/views/index/index.html.erb",
      "templates/skeleton/app/views/layouts/default.html.erb",
      "templates/skeleton/config/app.yml",
+     "templates/skeleton/config/boot.rb",
      "templates/skeleton/config/database.yml",
      "templates/skeleton/config/environment.rb",
      "templates/skeleton/config/rack.rb",
