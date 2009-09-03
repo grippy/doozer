@@ -1,6 +1,8 @@
 #!/usr/bin/env ruby
-require 'date'
-require 'rubygems'
-require 'doozer'
+# require 'date'
+# require 'rubygems'
+# require 'doozer'
+
 APP_PATH = Dir.pwd
+require File.join(APP_PATH, 'config/boot')
 require File.join(DOOZER_PATH, 'doozer/scripts/cluster')
