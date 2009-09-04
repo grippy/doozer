@@ -1,6 +1,10 @@
 #!/usr/bin/env ruby
-require 'rubygems'
-require 'doozer'
+# require 'rubygems'
+# require 'doozer'
+# APP_PATH=Dir.pwd
+
+APP_PATH = Dir.pwd
+require File.join(APP_PATH, 'config/boot')
 
 #--boot it up
 Doozer::Initializer.boot(env)

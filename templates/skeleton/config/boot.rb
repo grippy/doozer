@@ -1,5 +1,4 @@
-DOOZER_GEM_VERSION='0.1.4'
-
+DOOZER_GEM_VERSION='0.1.5'
 
 begin
   require 'date'
