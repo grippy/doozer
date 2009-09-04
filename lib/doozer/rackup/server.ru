@@ -1,7 +1,4 @@
 #!/usr/bin/env ruby
-# require 'rubygems'
-# require 'doozer'
-# APP_PATH=Dir.pwd
 
 APP_PATH = Dir.pwd
 require File.join(APP_PATH, 'config/boot')
@@ -19,7 +16,7 @@ map "/" do
 	  use Rack::Reloader, secs=1
 	end
 	
-	use Rack::Static, {:urls => Doozer::Configs.app["static_urls"], :root => "#{Dir.pwd}/#{Doozer::Configs.app["static_root"]}"} if Doozer::Configs.app
+	use Rack::Static, {:urls => Doozer::Configs.app["static_urls"], :root => "#{APP_PATH}/#{Doozer::Configs.app["static_root"]}"} if Doozer::Configs.app
 
 	use Rack::Session::Cookie, :key => 'rack.session',
 	                           :domain => '',
@@ -31,7 +28,7 @@ end
 
 #--stack additional rack apps
 begin
-	require "#{Dir.pwd}/config/rack"
+	require "#{APP_PATH}/config/rack"
 	stack()
 rescue => e
 	Doozer::Configs.logger.error(e)
