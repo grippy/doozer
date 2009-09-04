@@ -1,8 +1,8 @@
 #!/usr/bin/env ruby
-require 'date'
 require 'irb'
-require 'rubygems'
-require 'doozer'
+APP_PATH = Dir.pwd
+require File.join(APP_PATH, 'config/boot')
+
 @env = (ARGV.length > 0) ? ARGV[0] : 'development'
 ARGV.delete(@env) if ARGV.include?(@env)
 @env = @env.to_sym
