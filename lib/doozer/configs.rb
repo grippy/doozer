@@ -13,8 +13,8 @@ module Doozer
    
    # Load all the config files for the application. Also instantiates a default application Logger.
    def self.load(rack_env)
-      printf "Application path is #{app_path}... \n" 
-      printf "Loading configs for #{rack_env}... \n"
+      printf "Application path: #{app_path}\n" 
+      printf "Loading configs for #{rack_env}\n"
       
       @@config = Config::CONFIG
       rack_env = (rack_env.kind_of? String) ? rack_env.to_sym : rack_env
