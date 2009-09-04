@@ -92,18 +92,15 @@ def stop
 end
 
 opts = OptionParser.new("", 24, '  ') { |opts|
-  opts.banner = "Usage: script/clusters -C [command] -E [environment] -h"
-
+  opts.banner = "Usage: script/cluster -C [command] -E [environment] -h"
   opts.separator ""
   opts.separator "Command options:"
   opts.on("-C", "--command COMMAND", "start, stop, restart, or test") { | c |
     @command = c.downcase.to_sym
   }
-  
   opts.on("-E", "--env ENVIRONMENT", "default: development || deployment") { | e |
     @env = e.downcase.to_sym
   }
-  
   opts.on_tail("-h", "--help", "Show this message") do
     puts opts
     exit
