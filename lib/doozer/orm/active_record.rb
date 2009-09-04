@@ -3,7 +3,7 @@ module Doozer
   module ORM
     def self.load
       db_config = Doozer::Configs.db()
-      # ActiveRecord::Base.allow_concurrency = true
+      ActiveRecord::Base.allow_concurrency = true
       ActiveRecord::Base.establish_connection(
         :adapter  => db_config["adapter"],
         :host     => db_config["host"],

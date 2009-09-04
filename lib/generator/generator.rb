@@ -433,6 +433,9 @@ Task - Create a task file in project/tasks with the class name of TaskName.
         system("mkdir #{name}/config")
         system("cp #{skeleton_path 'config/*.yml'} #{name}/config")
         system("cp #{skeleton_path 'config/*.rb'} #{name}/config")
+        
+        ## load boot.erb replace version number and save as boot.rb
+        
       else
         p "Skipping #{name}/config directory (already exists)"
       end
