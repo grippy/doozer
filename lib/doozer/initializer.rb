@@ -43,7 +43,8 @@ module Doozer
       # load orm layer (if required)
         if not Doozer::Configs.orm.nil? and not Doozer::Configs.db.nil?
           require "doozer/orm/#{Doozer::Configs.orm}"
-          Doozer::ORM.load 
+          Doozer::ORM.load
+          Doozer::Configs.orm_loaded = true
         end
       rescue => e
         Doozer::Configs.logger.error(e)

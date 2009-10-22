@@ -35,34 +35,37 @@ module Doozer
             controller = controller_klass.new({:env=>env, :route=>route, :extra_params=>extra_params, :port=>@options[:Port]})
             
             # call after_initialize test for excludes
-            #execution_time('controller.after_initialize',:start)
+            execution_time('controller.after_initialize',:start)
             controller.after_initialize if not controller_klass.after_initialize_exclude.include?(route.action.to_sym)
-            #execution_time(nil, :end)
+            execution_time(nil, :end)
             
             begin
 
               # call before_filter test for excludes
-              #execution_time('controller.before_filter',:start)
+              execution_time('controller.before_filter',:start)
               controller.before_filter if not controller_klass.before_filter_exclude.include?(route.action.to_sym)
-              #execution_time(nil,:end)
+              execution_time(nil,:end)
               
               # call the action method
-              #execution_time('controller.method(route.action).call',:start)
+              execution_time('controller.method(route.action).call',:start)
               controller.method(route.action).call()
-              #execution_time(nil,:end)
+              execution_time(nil,:end)
               
               # call after_filter test for excludes
-              #execution_time('controller.after_filter',:start)
+              execution_time('controller.after_filter',:start)
               controller.after_filter if not controller_klass.after_filter_exclude.include?(route.action.to_sym)
-              #execution_time(nil, :end)
+              execution_time(nil, :end)
               
               # render controller...
-              #execution_time('controller.render_result',:start)
+              execution_time('controller.render_result',:start)
               # r = Rack::Response.new(controller.render_controller(view, layout), route.status, {"Content-Type" => route.content_type})
               r = Rack::Response.new(controller.render_result, route.status, {"Content-Type" => route.content_type})
-              #execution_time(nil,:end)
+              execution_time(nil,:end)
               r.set_cookie('flash',{:value=>nil, :path=>'/'})
               r.set_cookie('session',{:value=>controller.session_to_cookie(), :path=>'/'})
+              
+              # finalize the request
+              controller.finished!
               controller = nil
               return r.to_a
 
@@ -76,8 +79,16 @@ module Doozer
               # if we get a redirect we need to do something with the flash messages...
               r.set_cookie('flash',{:value=>controller.flash_to_cookie(), :path=>'/'}) # might need to set the domain from config app_name value
               r.set_cookie('session',{:value=>controller.session_to_cookie(), :path=>'/'})
+              
+              # finalize the request              
+              controller.finished!
+              controller = nil
               return r.to_a
             rescue => e
+              # finalize the request
+              controller.finished!
+              controller = nil
+              
               if Doozer::Configs.rack_env == :deployment
                 logger.error("RuntimeError: #{e.to_s}")
                 for line in e.backtrace

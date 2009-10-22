@@ -14,5 +14,8 @@ module Doozer
       }) 
       printf "ORM: #{Doozer::Configs.orm} initialized...\n"
     end
+    
+    def self.after_request; end
+    
   end
 end

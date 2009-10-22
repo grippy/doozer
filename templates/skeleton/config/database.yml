@@ -10,7 +10,7 @@ development:
 #     password:
 #     host: localhost
 
-production:
+deployment:
 #     adapter: mysql
 #     database: app_production
 #     username: root

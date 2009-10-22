@@ -4,16 +4,25 @@ module Doozer
     def self.load
       db_config = Doozer::Configs.db()
       #ActiveRecord::Base.allow_concurrency = true
-      ActiveRecord::Base.establish_connection(
-        :adapter  => db_config["adapter"],
-        :host     => db_config["host"],
-        :username => db_config["username"],
-        :password => db_config["password"],
-        :database => db_config["database"]
-      )
+        config = {
+          :adapter  => db_config["adapter"],
+          :host     => db_config["host"],
+          :username => db_config["username"],
+          :password => db_config["password"],
+          :database => db_config["database"]
+        }
+      config[:pool] = db_config["pool"] if db_config["pool"]
+      config[:reconnect] = db_config["reconnect"] if db_config["reconnect"]
+      
+      ActiveRecord::Base.establish_connection(config)
       printf "ORM: #{Doozer::Configs.orm()} initialized...\n"
       # printf "ORM: logging initialized"
       ActiveRecord::Base.logger = Doozer::Configs.logger
     end
+    
+    def self.after_request
+      ActiveRecord::Base.clear_active_connections!
+    end
+    
   end
 end

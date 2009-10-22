@@ -48,6 +48,7 @@ module Doozer
       rescue
        printf "--Failed to load config/app.yml\n"
       end
+
    end
 
    # We initialize the application logger in this Configs. This is then extended through to the ActiveRecord and is also available in ViewHelpers.
@@ -96,6 +97,14 @@ module Doozer
    # Return the database configuration setting for the loaded environment
    def self.db
      return @@config[:database][@@config[:rack_env]] if not @@config[:database].nil?
+   end
+
+   def self.orm_loaded
+     @@orm_loaded || false
+   end
+   
+   def self.orm_loaded=(t)
+     @@orm_loaded = t
    end
    
    # Only used for Sequel ORM for getting the db connection after connecting

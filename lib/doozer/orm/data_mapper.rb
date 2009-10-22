@@ -15,5 +15,8 @@ module Doozer
       printf "ORM: #{Doozer::Configs.orm()} initialized...\n"
       DataMapper::Logger.new(STDOUT, :debug)
     end
+    
+    def self.after_request; end
+    
   end
 end

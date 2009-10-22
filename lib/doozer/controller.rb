@@ -196,7 +196,7 @@ module Doozer
     # Compile flash keys as name=value array which are stored in the flash cookie. The flash variables are only persisted for one response.
     def flash_to_cookie
       #loop over all flash messages and return as name/value array
-      out=[]; @flash.each { |key, value| out.push("#{key}=#{CGI::escape(value.to_s)}") }
+      out=[]; @flash.each { |key, value| out.push("#{key}=#{CGI::escape(value.to_s)}") if not value.nil? }
       return out
     end
 
@@ -217,7 +217,7 @@ module Doozer
     # Compile session keys as name=value array which are eventually stored as cookies.
     def session_to_cookie
       #loop over all flash messages and return as name/value array
-      out=[]; @session.each { |key, value| out.push("#{key}=#{CGI::escape(value.to_s)}") }
+      out=[]; @session.each { |key, value| out.push("#{key}=#{CGI::escape(value.to_s)}") if not value.nil? }
       return out
     end
 
@@ -269,6 +269,11 @@ module Doozer
     
     # Controller hook called after controller#method call
     def after_filter; end
+
+    # Global tear called at the end of every request. Hooks ORM.teardown
+    def finished!
+      Doozer::ORM.after_request if Doozer::Configs.orm_loaded
+    end
 
     # Include additional view helpers declared for the class.
     #

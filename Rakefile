@@ -14,6 +14,9 @@ begin
     gem.files.include %w() # lib/**/**/**/**/** templates/**/**/**/**
     
   end
+  
+  Jeweler::GemcutterTasks.new do | gem |
+  end
 
 rescue LoadError
   puts "Jeweler (or a dependency) not available. Install it with: sudo gem install jeweler"
