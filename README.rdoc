@@ -7,16 +7,20 @@
 * Clustering ala Mongrel::Cluster
 
 == Requirements
-* Ruby < 1.9 (untestested on Ruby 1.9 as of now)
-* Rack (http://rack.rubyforge.org) gem (0.9.1 or 1.0.0)
-* Any http server supported by Rack
-* ActiveRecord, DataMapper or Sequel (only if you need DB support)
+* Ruby < 1.9 (untested on Ruby 1.9 as of now)
+* Rack (http://rack.rubyforge.org) gem (0.9.1, 1.0.0, or 1.0.1)
+* Any http server supported by Rack out of the box (CGI, FastCGI, Mongrel, EventedMongrel, SwiftipliedMongrel, WEBrick, LSWS, SCGI, or Thin)
+* ActiveRecord, DataMapper, or Sequel (only if you need DB support)
+
+== Gems
+* As of version >= 0.2.0, the doozer gem is now distributed via gemcutter.
+* The project homepage is here: http://gemcutter.org/gems/doozer
 
 == Getting Started
 1. Install the gem(s):
-	- gem sources -a http://gems.github.com (if you haven't already)
+	- gem sources -a http://gemcutter.org (if you haven't already)
 	- sudo gem install rack
-	- sudo gem install grippy-doozer
+	- sudo gem install doozer
 2. Run 'doozer test-app' to generate the base application skeleton.
 3. Fire up the application in development mode 
 	- cd test-app

@@ -20,6 +20,7 @@ clusters = Doozer::Configs.symbolize_keys(config[:clusters])
 @server = clusters[:server]
 @config = DOOZER_PATH + '/doozer/rackup/server.ru'
 @test_config = DOOZER_PATH + '/doozer/rackup/test.rb'
+@config_file = '' #optional config file to use instead of the default unicorn config
 @apps = []
 
 for app in clusters[:apps]
@@ -57,6 +58,29 @@ def start
   end
   printf "Did they start?\n"
   system("ps -aux | grep rackup")
+end
+
+# Call to start unicorn server
+#
+# Set the app.yml clusters server to unicorn complete with one ip:port value.
+#
+# You can also pass an optional value -c FILE to override the default unicorn conf.
+#
+# See Unicorn::Configurator for more details => http://unicorn.bogomips.org/Unicorn/Configurator.html 
+#
+# You'll need to create your own scripts for stoping and restarting.
+#
+# See this page for details => http://unicorn.bogomips.org/SIGNALS.html
+def start_unicorn
+  printf "Starting unicorn... \n"
+  for app in @apps
+    # unicorn
+    @config_file = "-c #{@config_file}" if @config_file != ''
+    cmd = "unicorn  -p #{app[:port]} -E #{@env.to_s} -o #{app[:ip]} #{@daemonize} #{@config_file} #{@config}"
+    printf "Command: #{cmd}\n"
+    system(cmd)
+    break
+  end
 end
 
 # Calls stop() and then start()
@@ -101,6 +125,10 @@ opts = OptionParser.new("", 24, '  ') { |opts|
   opts.on("-E", "--env ENVIRONMENT", "default: development || deployment") { | e |
     @env = e.downcase.to_sym
   }
+  opts.on("-c", "--config-file FILE", "optional config file to use for server (supported by unicorn, etc.)") { | cf |
+    @config_file = cf || ''
+  }
+  
   opts.on_tail("-h", "--help", "Show this message") do
     puts opts
     exit
@@ -113,7 +141,7 @@ opts = OptionParser.new("", 24, '  ') { |opts|
 
 case @command
   when :start
-    start()
+    @server != 'unicorn' ? start() : start_unicorn()
   when :restart
     restart()
   when :stop
