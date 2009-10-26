@@ -165,9 +165,10 @@ module Doozer
       props.join("&")
     end    
     
-    # Safe encodes a string by entity encodes all less then and greater then signs
+    # Safe encodes a string by entity encoding all less then and greater then signs
     #
     def h(s)
+      s.gsub!(/&/,'&amp;')
       s.gsub!(/</,'&lt;')
       s.gsub!(/>/,'&gt;')
       return s

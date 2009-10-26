@@ -1,14 +1,15 @@
 #!/usr/bin/env ruby
 require 'irb'
 APP_PATH = Dir.pwd
-require File.join(APP_PATH, 'config/boot')
+boot = File.join(APP_PATH, 'config/boot')
+require boot
 
 @env = (ARGV.length > 0) ? ARGV[0] : 'development'
 ARGV.delete(@env) if ARGV.include?(@env)
 @env = @env.to_sym
 printf "[Doozer #{Doozer::Version::STRING}]\n"
 # see http://ruby-doc.org/core/ for more options
-IRB.conf[:LOAD_MODULES] = ["irb/completion", "#{DOOZER_PATH}/doozer/scripts/console"]
+IRB.conf[:LOAD_MODULES] = ["irb/completion", boot, "#{DOOZER_PATH}/doozer/scripts/console"]
 IRB.conf[:USE_READLINE] = true
 IRB.load_modules()
 IRB.parse_opts()

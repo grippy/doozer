@@ -1,4 +1,5 @@
 require 'doozer/app'
+require 'doozer/view_helpers'
 
 module Doozer
   module Routing
@@ -18,6 +19,8 @@ module Doozer
 
         # init magic routes :conrtoller/:action or just /:action with predefined :controller
         # Routes.init_magic_routes
+        
+        Routes.init_view_helpers
         
         # sort routes here
         @@parts.sort! do |a, b| a[1].length <=> b[1].length end
@@ -186,6 +189,13 @@ module Doozer
           ## loop route/methods pairs
           # save new path for action controller
       end
+    
+      def self.init_view_helpers
+        for k, route in @@dict
+          Doozer::ViewHelpers.module_eval(route.url_helper_method)
+        end
+      end
+    
     end
 
     class Route
@@ -287,6 +297,44 @@ module Doozer
         end        
         return hashish
       end
+      
+      # Parses route tokens and returns a helper method which evntually module_eval'd into Doozer::ViewHelpers
+      def url_helper_method
+        method_name=[@name]
+        # method_name.push(@format) if @format != :html
+        method_name.push('url')
+        signature = []
+        signature.push('(')
+        if not @tokens.empty?
+          t = []
+          for token in @tokens
+            if token.index('.')
+              t.push(token.split('.')[0])
+            else
+              t.push(token)
+            end
+          end
+          signature.push(t.join(', '))
+        end
+        signature.push(')')
+        
+        url_method = []
+        url_method.push("url({:name=>:#{@name}")
+        if not @tokens.empty?
+          t = []
+          for token in @tokens
+            if token.index('.')
+              token = token.split('.')[0]
+            end
+            t.push(" :#{token.to_sym}=>#{token}")
+          end
+          url_method.push(",#{t.join(',')}")
+        end
+        url_method.push("})")
+        method = """def #{method_name.join('_')}#{signature.join('')}; #{url_method} end"""
+        return method
+      end
+      
     end
   end
 end
