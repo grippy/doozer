@@ -27,6 +27,5 @@ module Doozer
       end
       s
     end
-        
   end
 end

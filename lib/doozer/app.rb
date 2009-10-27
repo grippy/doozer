@@ -257,10 +257,12 @@ module Doozer
             puts "modified: #{file}"
             load_files
             Doozer::Partial.clear_loaded_partials
+            Doozer::Configs.clear_static_files
         elsif(status == FileSystemWatcher::DELETED) then
             puts "deleted: #{file}"
             load_files
             Doozer::Partial.clear_loaded_partials
+            Doozer::Configs.clear_static_files
         end
       }
       #don't join the thread it messes up rackup threading watcher.join()

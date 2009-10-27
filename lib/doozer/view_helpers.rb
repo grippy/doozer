@@ -75,8 +75,7 @@ module Doozer
     #
     # prop - a hash of image tag attributes
     def img(path, prop={})
-      path = timestamp_path(path)
-      "<img src=\"#{path}\"#{hash_to_props(prop)} />"
+      "<img src=\"#{static_url(path)}\"#{hash_to_props(prop)} />"
     end
     
     # Creates a stylesheet link tag.
@@ -88,11 +87,10 @@ module Doozer
     # => Defaults to :rel=>'stylesheet', :type=>'text/css', :media=>'all'
     def stylesheet(path, prop={})
       #<link rel="stylesheet" type="text/css" media="all" href="/css/style.css" />
-      path = timestamp_path(path)
       prop[:rel] = 'stylesheet' if prop[:rel].nil?
       prop[:type] = 'text/css' if prop[:type].nil?
       prop[:media] = 'all' if prop[:media].nil?
-      "<link #{hash_to_props(prop)} href=\"#{path}\" />"
+      "<link #{hash_to_props(prop)} href=\"#{static_url(path)}\" />"
     end
 
     # Creates a link tag for feeds.
@@ -114,9 +112,18 @@ module Doozer
     #
     # => Defaults to: :type=>'text/javascript'
     def javascript(path, prop={})
-      path = timestamp_path(path)
       prop[:type] = 'text/javascript' if prop[:type].nil?
-      "<script #{hash_to_props(prop)} src=\"#{path}\"></script>"
+      "<script #{hash_to_props(prop)} src=\"#{static_url(path)}\"></script>"
+    end
+
+
+    # Creates a url for static files
+    #
+    # hahses the file date and appends it to the end of the file for cache busting...
+    #
+    # 
+    def static_url(path)
+      Doozer::Configs.static_url(path)
     end
 
     # Creates metatags

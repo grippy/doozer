@@ -270,7 +270,7 @@ module Doozer
     # Controller hook called after controller#method call
     def after_filter; end
 
-    # Global tear called at the end of every request. Hooks ORM.teardown
+    # Global teardown called at the end of every request. Hooks ORM.teardown
     def finished!
       Doozer::ORM.after_request if Doozer::Configs.orm_loaded
     end

@@ -10,6 +10,7 @@ module Doozer
   class Configs
    @@possible_orm = [:active_record, :data_mapper, :sequel]
    @@app_path = nil
+   @@static_file = {}
    
    # Load all the config files for the application. Also instantiates a default application Logger.
    def self.load(rack_env)
@@ -130,8 +131,13 @@ module Doozer
    # Return the app name
    def self.app_name
      self.app["name"] || ""
-   end      
+   end
       
+   # Return the app name
+   def self.static_root
+     self.app["static_root"] || ""
+   end
+
    # Return the app 404 url
    def self.page_not_found_url
      self.app[404] || nil
@@ -141,6 +147,28 @@ module Doozer
    def self.internal_server_error_url
      self.app[500] || nil
    end
+
+    def self.static_url(path)
+      return path if path.index('http://') or path.index('https://')
+      key = "#{@@app_path}/#{static_root}#{path}"
+      if not @@static_file[key].nil?
+        return "#{path}?#{@@static_file[key]}"
+      else
+        begin
+          time = File.stat(key).mtime
+          hash = Digest::SHA1.hexdigest(time.to_s)[0...5]
+          @@static_file[key] = hash
+          return "#{path}?#{hash}"
+        rescue => e
+          logger.error(e.to_s)
+        end
+      end
+      return path
+    end
+    
+    def self.clear_static_files
+      @@static_file = {}
+    end
 
   end
 end
