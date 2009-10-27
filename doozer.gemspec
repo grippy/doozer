@@ -9,7 +9,7 @@ Gem::Specification.new do |s|
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["grippy"]
-  s.date = %q{2009-10-26}
+  s.date = %q{2009-10-27}
   s.default_executable = %q{doozer}
   s.description = %q{This GEM provides a small, barebones framework for creating MVC Rack applications.}
   s.email = %q{gmelton@whorde.com}
@@ -72,7 +72,7 @@ Gem::Specification.new do |s|
      "templates/skeleton/app/views/index/index.html.erb",
      "templates/skeleton/app/views/layouts/default.html.erb",
      "templates/skeleton/config/app.yml",
-     "templates/skeleton/config/boot.rb",
+     "templates/skeleton/config/boot.erb",
      "templates/skeleton/config/database.yml",
      "templates/skeleton/config/environment.rb",
      "templates/skeleton/config/rack.rb",

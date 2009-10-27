@@ -1,3 +1,5 @@
+require 'erb'
+
 module Doozer
   
   #= Generate Project Skeletons and Files
@@ -349,7 +351,7 @@ Task - Create a task file in project/tasks with the class name of TaskName.
 
     # TODO: Dry this up...
     def self.skeleton(name)
-      
+    
       # create application skeleton
       if not File.exist?(name)
         p "Creating #{name}/"
@@ -435,7 +437,12 @@ Task - Create a task file in project/tasks with the class name of TaskName.
         system("cp #{skeleton_path 'config/*.rb'} #{name}/config")
         
         ## load boot.erb replace version number and save as boot.rb
-        
+        boot_skel = skeleton_path 'config/boot.erb'
+        results = []
+        @version = Doozer::Version::STRING
+        File.new(boot_skel, "r").each { |line| results << line }
+        boot = ERB.new(results.join(""))
+        File.open("#{name}/config/boot.rb", 'w') {|f| f.write(boot.result(binding)) }
       else
         p "Skipping #{name}/config directory (already exists)"
       end

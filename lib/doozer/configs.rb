@@ -11,6 +11,7 @@ module Doozer
    @@possible_orm = [:active_record, :data_mapper, :sequel]
    @@app_path = nil
    @@static_file = {}
+   @@orm_loaded = false
    
    # Load all the config files for the application. Also instantiates a default application Logger.
    def self.load(rack_env)
@@ -101,7 +102,7 @@ module Doozer
    end
 
    def self.orm_loaded
-     @@orm_loaded || false
+     @@orm_loaded
    end
    
    def self.orm_loaded=(t)
