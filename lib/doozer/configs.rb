@@ -133,8 +133,8 @@ module Doozer
    def self.app_name
      self.app["name"] || ""
    end
-      
-   # Return the app name
+   
+   # Return the static root
    def self.static_root
      self.app["static_root"] || ""
    end
