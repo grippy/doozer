@@ -260,9 +260,19 @@ end
            klass = Doozer::Lib.classify(name)
            template = """
 #= Task #{klass}
-class #{klass}
-  def self.run
-      #place your task here
+#
+class #{klass} < Doozer::Task
+  def description
+    \"\"\"Place your task description here\"\"\"
+  end
+  def help
+    \"\"\"Place your task help here\"\"\"
+  end
+  
+  
+  def run
+    # Place your task here
+    # @args holds evaluated args string
   end
 end
 """

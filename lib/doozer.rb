@@ -27,6 +27,7 @@ module Doozer
     autoload :Route,        "doozer/exceptions"
   end
   
+  autoload :Task,           "doozer/task"
   autoload :ViewHelpers,    "doozer/view_helpers"
   autoload :Version,        "doozer/version"
   

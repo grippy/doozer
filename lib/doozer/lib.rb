@@ -12,8 +12,9 @@ module Doozer
         }
         klass = parts.join('')
       else
-        klass.capitalize!
+        klass = klass.capitalize
       end
+      return klass
     end
     
     #Returns a one-level deep folder/file structure and preservers underscores for filename. 

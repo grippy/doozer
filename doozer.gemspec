@@ -9,7 +9,7 @@ Gem::Specification.new do |s|
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["grippy"]
-  s.date = %q{2009-10-27}
+  s.date = %q{2009-10-28}
   s.default_executable = %q{doozer}
   s.description = %q{This GEM provides a small, barebones framework for creating MVC Rack applications.}
   s.email = %q{gmelton@whorde.com}
@@ -59,6 +59,7 @@ Gem::Specification.new do |s|
      "lib/doozer/scripts/migrate.rb",
      "lib/doozer/scripts/task.rb",
      "lib/doozer/scripts/test.rb",
+     "lib/doozer/task.rb",
      "lib/doozer/version.rb",
      "lib/doozer/view_helpers.rb",
      "lib/doozer/watcher.rb",

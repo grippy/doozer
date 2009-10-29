@@ -7,6 +7,7 @@
 # -C command (start || stop || restart || test)
 # -E environment (default: development || deployment)
 # -D (daemonize) - This is automatically initialized in deployment mode. There should be no need to pass this unless you want to test it out in development mode.
+# -c config file - This is used to pass a config file for starting up unicorn
 # -h Hellllpppp!!!
 require 'optparse'
 

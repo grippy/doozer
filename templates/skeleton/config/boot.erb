@@ -3,9 +3,37 @@ DOOZER_GEM_VERSION='<%=@version%>'
 require 'date'
 require 'rubygems'
 
-begin
-  gem 'doozer', "= #{DOOZER_GEM_VERSION}"
-  require 'doozer'
-rescue Gem::LoadError
-  raise "doozer-#{DOOZER_GEM_VERSION} gem not installed"
+module Doozer
+  class << self
+    def load!
+      init_doozer
+      init_plugins
+    end
+    
+    def init_doozer
+      path = "#{APP_PATH}/gems/doozer/doozer-#{DOOZER_GEM_VERSION}"
+      if File.exist?(path)
+        $:.unshift "#{path}/lib"
+        require "#{path}/lib/doozer"
+      else
+        begin
+          gem 'doozer', "= #{DOOZER_GEM_VERSION}"
+          require 'doozer'
+        rescue Gem::LoadError
+          raise "doozer-#{DOOZER_GEM_VERSION} gem not installed"
+        end
+      end
+    end
+    
+    def init_plugins
+      require 'gems/plugins/init'
+    end
+    
+    def plugin(folder, init_file)
+      $:.unshift "#{APP_PATH}/gems/plugins/#{folder}/lib"
+      require "#{APP_PATH}/gems/plugins/#{folder}/lib/#{init_file}"
+    end
+
+  end
 end
+Doozer.load!
