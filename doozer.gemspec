@@ -5,7 +5,7 @@
 
 Gem::Specification.new do |s|
   s.name = %q{doozer}
-  s.version = "0.2.6"
+  s.version = "0.3.0"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["grippy"]
@@ -78,6 +78,7 @@ Gem::Specification.new do |s|
      "templates/skeleton/config/environment.rb",
      "templates/skeleton/config/rack.rb",
      "templates/skeleton/config/routes.rb",
+     "templates/skeleton/gems/plugins/init.rb",
      "templates/skeleton/script/cluster",
      "templates/skeleton/script/console",
      "templates/skeleton/script/migrate",

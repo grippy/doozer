@@ -265,11 +265,11 @@ class #{klass} < Doozer::Task
   def description
     \"\"\"Place your task description here\"\"\"
   end
+
   def help
     \"\"\"Place your task help here\"\"\"
   end
-  
-  
+
   def run
     # Place your task here
     # @args holds evaluated args string
@@ -455,6 +455,15 @@ Task - Create a task file in project/tasks with the class name of TaskName.
         File.open("#{name}/config/boot.rb", 'w') {|f| f.write(boot.result(binding)) }
       else
         p "Skipping #{name}/config directory (already exists)"
+      end
+
+      # create gems folder
+      if not File.exist?("#{name}/gems")
+        p "Creating #{name}/gems directory"
+        system("cp -R #{skeleton_path 'gems'} #{name}")
+        system("mkdir #{name}/gems/doozer")
+      else
+        p "Skipping #{name}/gems directory (already exists)"
       end
 
       # create log folder

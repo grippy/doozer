@@ -1,19 +1,26 @@
 #= Tasks
 # This file is required in script/task.
 # Add files to /tasks where the specified task_name contains a class with TaskName and a 'run' class method.
-# Running a task automatically loads Doozer::Config and the specified ORM. You must require all other files your tasks require beyond these.
+# Running a task automatically loads Doozer::Config and the specified ORM. 
 # Navigate to your app root and run it with the following commands.
 #
 # script/clusters 
 # -T task_name
 # -E environment (default: development || deployment)
+# -A args
 # -h Hellllpppp!!!
 #
 #== Example
 # Suppose you have this file tasks/who_rocks.rb
 #
 # class WhoRocks
-#   def self.run
+#   def description
+#   """ description """
+#   end
+#   def help
+#   """ help me! """
+#   end
+#   def run
 #    p "You Do!"
 #   end
 # end

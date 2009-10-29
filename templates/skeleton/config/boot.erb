@@ -5,11 +5,12 @@ require 'rubygems'
 
 module Doozer
   class << self
+    @@after_orm_plugins = []
+    @@after_orm_gems = []
     def load!
       init_doozer
       init_plugins
     end
-    
     def init_doozer
       path = "#{APP_PATH}/gems/doozer/doozer-#{DOOZER_GEM_VERSION}"
       if File.exist?(path)
@@ -24,16 +25,38 @@ module Doozer
         end
       end
     end
-    
     def init_plugins
-      require 'gems/plugins/init'
+      begin
+        require 'gems/plugins/init'
+      rescue => e
+      end
     end
-    
+    def init_after_orm_plugins
+      p "here1"
+      @@after_orm_plugins.each { | p |
+        plugin(p[:folder], p[:init_file])
+      }
+    end
+    def init_after_orm_gems
+      p "here2"
+      @@after_orm_gems.each { | g |
+        require_gem(g[:name], g[:version])
+      }
+    end
+    def require_gem(name, version=nil)
+        gem name, version if not version.nil? 
+        require name
+    end
+    def require_gem_after_orm(name, version=nil)
+        @@after_orm_gems.push({:name=>name, :version=>version})
+    end
     def plugin(folder, init_file)
       $:.unshift "#{APP_PATH}/gems/plugins/#{folder}/lib"
       require "#{APP_PATH}/gems/plugins/#{folder}/lib/#{init_file}"
     end
-
+    def plugin_after_orm(folder, init_file)
+      @@after_orm_plugins.push({:folder=>folder, :init_file=>init_file})
+    end
   end
 end
 Doozer.load!

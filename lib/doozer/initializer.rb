@@ -5,10 +5,12 @@ module Doozer
   # Calling boot initializes Doozer in the following order:
   # 1. Doozer::Configs
   # 2. require ORM
-  # 3. require root/config/environment.rb
-  # 4. call after_orm_init
-  # 5. require Doozer::App
-  # 6. call before_rackup_init
+  # 3. require app_path/config/environment.rb
+  # 4. call Doozer::Initializer.after_orm_init
+  # 5. call Doozer.init_after_orm_gems - initialized in app_path/gems/plugins/init.rb
+  # 6. call Doozer.init_after_orm_plugins - initialized in app_path/gems/plugins/init.rb
+  # 7. require Doozer::App
+  # 8. call Doozer::Initializer.before_rackup_init
   class Initializer
     @@after_orm = []
     @@before_rackup = []
@@ -29,6 +31,12 @@ module Doozer
 
       #--call the after_orm_init features
       Doozer::Initializer.after_orm_init
+
+      #--load the after orm gems
+      Doozer.init_after_orm_gems
+      
+      #--load the after orm plugins
+      Doozer.init_after_orm_plugins
 
       #--load app
       require 'doozer/app'
@@ -53,7 +61,7 @@ module Doozer
 
     # Requires the root/config/environment.rb hooks. 
     #
-    # This is where you can place your code to initialize additional plugins for models, extend ruby, or whatever else yor app requires.
+    # This is where you can place your code to initialize additional plugins for models, extend ruby, or whatever else your app requires.
     # 
     #=== Example environment.rb
     # Time::DATE_FORMATS[:month_and_year] = "%B %Y"
@@ -88,7 +96,7 @@ module Doozer
     
     # Primary hook for adding/overriding Doozer::ViewHelpers methods. Code block is pushed onto an array which allows for multiple hooks throughtout different files.
     #
-    # &block - code to execute after prior to Doozer.App.new being intialized. 
+    # &block - code to execute prior to Doozer.App.new being intialized. 
     def self.before_rackup(&block)
       @@before_rackup.push(block) if block_given?
     end
