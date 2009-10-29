@@ -1,0 +1,4 @@
+#!/usr/bin/env ruby
+APP_PATH = Dir.pwd
+require File.join(APP_PATH, 'config/boot')
+require File.join(DOOZER_PATH, 'doozer/scripts/plugin')

@@ -57,6 +57,7 @@ Gem::Specification.new do |s|
      "lib/doozer/scripts/cluster.rb",
      "lib/doozer/scripts/console.rb",
      "lib/doozer/scripts/migrate.rb",
+     "lib/doozer/scripts/plugin.rb",
      "lib/doozer/scripts/task.rb",
      "lib/doozer/scripts/test.rb",
      "lib/doozer/task.rb",
