@@ -15,8 +15,7 @@ module Doozer
       config[:reconnect] = db_config["reconnect"] if db_config["reconnect"]
       
       ActiveRecord::Base.establish_connection(config)
-      printf "ORM: #{Doozer::Configs.orm()} initialized...\n"
-      # printf "ORM: logging initialized"
+      puts "=> #{Doozer::Configs.orm()} initialized"
       ActiveRecord::Base.logger = Doozer::Configs.logger
     end
     

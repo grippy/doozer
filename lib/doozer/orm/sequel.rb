@@ -12,7 +12,7 @@ module Doozer
         :password => db_config["password"],
         :host     => db_config["host"]
       }) 
-      printf "ORM: #{Doozer::Configs.orm} initialized...\n"
+      puts "=> #{Doozer::Configs.orm()} initialized"
     end
     
     def self.after_request; end

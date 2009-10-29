@@ -33,7 +33,7 @@ end
 # Automatically starts a test instance of your appserver on http://localhost:5000. (No -E flag is required for this command).
 def test
   cmd = "rackup #{@test_config}" 
-  printf "Command: #{cmd} -p 5000 -E test -o 127.0.0.1\n"
+  puts "=> #{cmd} -p 5000 -E test -o 127.0.0.1"
   system(cmd)
 end
 
@@ -41,23 +41,23 @@ end
 #
 # <b>deployment</b>: Automatically starts a new instance of your appserver for each defined cluster address:port
 def start
-  printf "Starting clusters...\n"
+  puts "Starting clusters..."
   for app in @apps
     if @env == :deployment
       #need to check if application has a pid file so we don't start
       pid_file = "#{APP_PATH}/log/doozer.#{app[:port]}.pid"
       raise "pid file already exists for #{pid_file}" if File.exist?(pid_file)
       cmd = "rackup #{@config} -p #{app[:port]} -E #{@env.to_s} -s #{@server} -o #{app[:ip]} #{@daemonize} -P #{pid_file}" 
-      printf "Command: #{cmd}\n"
+      puts "=> #{cmd}"
       system(cmd)
     else
       cmd = "rackup #{@config} -p #{app[:port]} -E #{@env.to_s} -s #{@server} -o #{app[:ip]}" 
-      printf "Command: #{cmd}\n"
+      puts "=> #{cmd}"
       system(cmd)
       break
     end
   end
-  printf "Did they start?\n"
+  puts "Did they start?"
   system("ps -aux | grep rackup")
 end
 
@@ -73,12 +73,12 @@ end
 #
 # See this page for details => http://unicorn.bogomips.org/SIGNALS.html
 def start_unicorn
-  printf "Starting unicorn... \n"
+  puts "Starting unicorn..."
   for app in @apps
     # unicorn
     @config_file = "-c #{@config_file}" if @config_file != ''
     cmd = "unicorn  -p #{app[:port]} -E #{@env.to_s} -o #{app[:ip]} #{@daemonize} #{@config_file} #{@config}"
-    printf "Command: #{cmd}\n"
+    puts "=> #{cmd}"
     system(cmd)
     break
   end
@@ -95,21 +95,21 @@ end
 # <b>deployment</b>: Automatically stops all instances of your appserver for each defined cluster address:port
 def stop
   system("ps -aux | grep rackup")
-  printf "Stoping clusters...\n"
+  puts "Stoping clusters..."
   for app in @apps
     if @env == :deployment
       pid_file = "#{APP_PATH}/log/doozer.#{app[:port]}.pid"
-      printf "Reading pid from #{pid_file}\n" 
+      puts "=> Reading pid from #{pid_file}" 
       if File.exist?(pid_file)
         File.open(pid_file, 'r'){ | f | 
           pid = f.gets.to_i
-          printf "Shutting down process #{pid}\n"
+          puts "=> Shutting down process #{pid}"
           system("kill -9 #{pid}")
 
         }
         File.delete(pid_file) 
       else
-        printf "pid file doesn't exist\n"
+        puts "ERROR => pid file doesn't exist"
       end
     end
   end

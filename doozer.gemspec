@@ -9,7 +9,7 @@ Gem::Specification.new do |s|
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["grippy"]
-  s.date = %q{2009-10-28}
+  s.date = %q{2009-10-29}
   s.default_executable = %q{doozer}
   s.description = %q{This GEM provides a small, barebones framework for creating MVC Rack applications.}
   s.email = %q{gmelton@whorde.com}
@@ -83,6 +83,7 @@ Gem::Specification.new do |s|
      "templates/skeleton/script/cluster",
      "templates/skeleton/script/console",
      "templates/skeleton/script/migrate",
+     "templates/skeleton/script/plugin",
      "templates/skeleton/script/task",
      "templates/skeleton/script/test",
      "templates/skeleton/static/404.html",

@@ -9,7 +9,7 @@ require 'doozer'
 class RoutingHelper < Test::Unit::TestCase
   
   def setup
-    printf "\n Routing Helper setup... \n"
+    puts "=> Routing helper setup"
     @app_path = File.join(File.dirname(__FILE__), 'project')
     
     #--boot

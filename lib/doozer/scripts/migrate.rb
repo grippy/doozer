@@ -86,19 +86,18 @@ Doozer::Initializer.boot(@env)
 # need to grab all the current migrations. assumes there isn't a migration with 000_*_.rb
 migrations = [nil].concat( Dir.glob(File.join(APP_PATH,'db/*_*.rb')) )
 
-printf "Loading migration files\n"
-printf "Version: #{@version}\n"
-printf "Direction: #{@direction}\n"
+puts "Loading migration files..."
+puts "=> Version: #{@version}"
+puts "=> Direction: #{@direction}"
 
 if @version > 0
   file = migrations[@version]
   raise "Can't find file for this migration" if file.nil?
   require file
-  p "Migrating #{file}"
+  puts "=> Migrating #{file}"
   klass = file.split("/").last.gsub(/\.rb/,"").split('_')
   klass = Doozer::Lib.classify(klass.slice(1, klass.length).join('_'))
   obj = Object.const_get(klass)
-  
   case @direction
   when :up
     obj.up

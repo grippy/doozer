@@ -6,7 +6,7 @@ require File.join(APP_PATH, 'config/boot')
 @env = (ARGV.length > 0) ? ARGV[0] : 'development'
 ARGV.delete(@env) if ARGV.include?(@env)
 @env = @env.to_sym
-printf "[Doozer #{Doozer::Version::STRING}]\n"
+puts "[Doozer #{Doozer::Version::STRING}]"
 # see http://ruby-doc.org/core/ for more options
 IRB.conf[:LOAD_MODULES] = ["irb/completion", "#{DOOZER_PATH}/doozer/scripts/console"]
 IRB.conf[:USE_READLINE] = true

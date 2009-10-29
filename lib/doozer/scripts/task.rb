@@ -68,22 +68,22 @@ if @task
   raise "Can't find this task file #{@task}" if file.nil?
   task, file_name = file_to_task(file, @args)
   if not @help
-    printf "Running #{@task}\n"
+    puts "Running #{@task}.."
     Doozer::Initializer.boot(@env)
     task.run
   else
-    printf "\n"
-    printf "Task\n  #{@task}\n\n"
-    printf "Description\n #{task.description}\n\n"
-    printf "Help\n  #{task.help}\n\n"
+    puts ""
+    puts "Task\n  #{@task}\n"
+    puts "Description\n #{task.description}\n"
+    puts "Help\n  #{task.help}\n"
   end
 elsif @help
   puts opts;
-  printf "\nLoading all tasks\n\n"
-  printf "Task: Description\n"
+  puts "Loading all tasks.."
+  puts "Task | Description"
   tasks = Dir.glob(File.join(APP_PATH,'tasks/*.rb'))
   tasks.each { | f |
     task, file_name = file_to_task(f, nil)
-    printf "#{file_name}: #{task.description}\n"
+    puts "=> #{file_name}: #{task.description}"
   }
 end

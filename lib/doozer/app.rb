@@ -15,7 +15,7 @@ module Doozer
       # attach the file watcher for the mvc/lib/etc in development mode
       load_watcher if Doozer::Configs.rack_env != :deployment
       
-      printf "Doozer racked up...\n"
+      puts "=> Doozer racked up"
     end
     
     # This method is called along the rackup chain and maps the request path to the route, controller, and view for the format type.
@@ -121,7 +121,7 @@ module Doozer
     def load_files
       # load models
       load_models
-      printf "Caching files...\n"
+      puts "=> Caching files"
       @@controllers = {}
       @@layouts={}
       @@views={}
@@ -223,7 +223,7 @@ module Doozer
     
     # Load all application models in app/models
     def load_models
-      printf "Loading models...\n"
+      puts "=> Loading models"
       Dir.glob(File.join(app_path,'app/models/*.rb')).each { | model | 
         require model 
       }
@@ -235,7 +235,7 @@ module Doozer
     def load_watcher
       require 'doozer/watcher'
       
-      printf "All along the watchtower...\n"
+      puts "=> Watching files for changes"
       watcher = FileSystemWatcher.new()
       
       # watcher.addDirectory(File.join(File.dirname(__FILE__),'../doozer/'), "*.rb")

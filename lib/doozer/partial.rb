@@ -56,7 +56,7 @@ module Doozer
           partial = Doozer::Partial.new(erb, locals, route)
           partial.bind()
       else
-        printf "--no partial exists for #{file}\n"
+        puts "ERROR => no partial exists for #{file}\n"
       end
     end
     
@@ -81,7 +81,7 @@ module Doozer
         # TODO: throw error if doesn't exist
         @@partials[name] = ERB.new(results.join(""))
       rescue
-        printf "sorry couldn't load partial #{name} (#{file}) \n"
+        puts "ERROR => sorry couldn't load partial #{name} (#{file})"
       end
     end    
     

@@ -32,13 +32,11 @@ module Doozer
       end
     end
     def init_after_orm_plugins
-      p "here1"
       @@after_orm_plugins.each { | p |
         plugin(p[:folder], p[:init_file])
       }
     end
     def init_after_orm_gems
-      p "here2"
       @@after_orm_gems.each { | g |
         require_gem(g[:name], g[:version])
       }

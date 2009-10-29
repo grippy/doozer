@@ -68,7 +68,7 @@ module Doozer
             help_all
           end
         elsif ['-v', '--version'].include?(action)
-          p "Doozer #{Doozer::Version::STRING}"
+          puts "Doozer #{Doozer::Version::STRING}"
         else
           help_all
         end
@@ -76,8 +76,8 @@ module Doozer
     end
     
     def self.help_all
-      printf "Doozer Version: #{Doozer::Version::STRING}\n"
-      printf "Doozer commands:\n"
+      puts "Doozer Version: #{Doozer::Version::STRING}"
+      puts "Commands"
       help(:project)
       help(:model)
       help(:view)
@@ -89,10 +89,10 @@ module Doozer
     
     def self.controller(name)
       return if help?(name, :controller) 
-      printf "Generating File(s)..."
+      puts "Generating File(s)..."
       path = "#{APP_PATH}/app/controllers/#{name.downcase}_controller.rb"
       if not File.exist?(path)
-        p "-- Generating Controller: #{path}"
+        puts "=> Generating controller: #{path}"
         file = File.new(path, "w+")
         if file
             template = "class #{Doozer::Lib.classify(name)}Controller < ApplicationController\nend"
@@ -100,33 +100,33 @@ module Doozer
             #make the view directory for this controller
             path = "#{APP_PATH}/app/views/#{name.downcase}"
             if not File.exist?(path)
-                p "-- Generating View Folder: #{path}"
+                puts "=> Generating view folder: #{path}"
                 FileUtils.mkdir path
             end
         else
-           p "Unable to open file!"
+           puts "ERROR => Unable to open file!"
         end
       else
-        p "-- Skipping: #{path} (already exists)"
+        puts "Skipping: #{path} (already exists)"
       end      
     end
 
     def self.model(orm, name)
       return if help?(name, :model)       
       raise "No ORM is defined. Please set this in database.yml" if orm.nil?
-      p "Loaded ORM: #{orm}"        
+      puts "Loaded ORM: #{orm}"        
       path = "#{APP_PATH}/app/models/#{name}.rb"
       if not File.exist?(path)
-        p "-- Generating Model: #{path}"
+        puts "=> Generating model: #{path}"
         file = File.new(path, "w+")
         if file
            template = eval("model_#{orm}('#{name}')")
            file.syswrite(template)
         else
-           p "Unable to open file!"
+           puts "ERROR => Unable to open file!"
         end
       else
-        p "-- Skipping: #{path} (already exists)"
+        puts "Skipping: #{path} (already exists)"
       end
     end
     def self.model_active_record(name)
@@ -156,15 +156,15 @@ end
 
     def self.view(view, formats)
       return if help?(view, :view) 
-      printf "Generating View File(s)..."
+      puts "Generating View File(s)..."
       raise "Not sure which controller to associate this view with. Needs to be controller_name/action_name. Example: index/login" if not view.index('/')
       formats.each{|f|
         file="#{APP_PATH}/app/views/#{view}.#{f.strip}.erb"
         if not File.exist?(file)
-          p "-- Generating: #{file}"
+          puts "=> Generating view: #{file}"
           FileUtils.touch file
         else
-          p "-- Skipping: #{file} (already exists)"
+          puts "Skipping: #{file} (already exists)"
         end
       }
     end
@@ -174,19 +174,19 @@ end
     
       raise "No ORM is defined. Please set this in database.yml" if orm.nil?      
       version = migrate_next
-      p "Loaded ORM: #{orm}"
+      puts "Loaded ORM: #{orm}"
       path = "#{APP_PATH}/db/#{version}_#{name.downcase}.rb"
       if not File.exist?(path)
-        p "-- Generating Migration: #{path}"
+        puts "=> Generating migration: #{path}"
         file = File.new(path, "w+")
         if file
            template = eval("migrate_#{orm}('#{name}')")
            file.syswrite(template)
         else
-           p "Unable to open file!"
+           puts "ERROR => Unable to open file!"
         end
       else
-        p "-- Skipping: #{path} (already exists)"
+        puts "Skipping: #{path} (already exists)"
       end
     end
     def self.migrate_next
@@ -251,10 +251,10 @@ end
     
     def self.task(name)
       return if help?(name, :task)
-      p "Generating file..."        
+      puts "Generating file..."        
       path = "#{APP_PATH}/tasks/#{name}.rb"
       if not File.exist?(path)
-        p "-- Generating Task: #{path}"
+        puts "=> Generating task: #{path}"
         file = File.new(path, "w+")
         if file
            klass = Doozer::Lib.classify(name)
@@ -278,19 +278,19 @@ end
 """
            file.syswrite(template)
         else
-           p "Unable to open file!"
+           puts "ERROR => Unable to open file!"
         end
       else
-        p "-- Skipping: #{path} (already exists)"
+        puts "Skipping: #{path} (already exists)"
       end
     end
 
     def self.helper(name)
       return if help?(name, :helper)
-      p "Generating file..."        
+      puts "Generating file..."
       path = "#{APP_PATH}/app/helpers/#{name}_helper.rb"
       if not File.exist?(path)
-        p "-- Generating Helper: #{path}"
+        puts "=> Generating helper: #{path}"
         file = File.new(path, "w+")
         if file
            klass = Doozer::Lib.classify(name)
@@ -301,16 +301,16 @@ end
 """
            file.syswrite(template)
         else
-           p "Unable to open file!"
+           puts "ERROR => Unable to open file!"
         end
       else
-        p "-- Skipping: #{path} (already exists)"
+        puts "Skipping: #{path} (already exists)"
       end
     end
     
     def self.help?(name, action=nil)
       if name.to_sym == :"-h" or name == :help
-        printf "doozer commands:\n"
+        puts "Commands:"
         help(action)
         return true
       end
@@ -356,7 +356,7 @@ Task - Create a task file in project/tasks with the class name of TaskName.
     Command: doozer generate (task or -T) task_name 
     Example: doozer generate task task_name\n"""
       end
-      printf h
+      puts h
     end
 
     # TODO: Dry this up...
@@ -364,84 +364,84 @@ Task - Create a task file in project/tasks with the class name of TaskName.
     
       # create application skeleton
       if not File.exist?(name)
-        p "Creating #{name}/"
+        puts "Creating #{name}/"
         system("mkdir #{name}")
       else
-        p "Skipping application directory (already exists)"
+        puts "Skipping application directory (already exists)"
       end
 
       #create app folder
       if not File.exist?("#{name}/app")
-        p "Creating app directory"
+        puts "=> Creating app directory"
         system("mkdir #{name}/app")
       else
-        p "Skipping #{name}/app directory (already exists)"
+        puts "Skipping #{name}/app directory (already exists)"
       end
       
       #copy controllers
       if not File.exist?("#{name}/app/controllers")
-        p "Creating #{name}/app/controllers directory and files"
+        puts "=> Creating #{name}/app/controllers directory and files"
         system("mkdir #{name}/app/controllers")
         system("cp #{skeleton_path 'app/controllers/*.rb'} #{name}/app/controllers")
       else
-        p "Skipping #{name}/app/controllers directory (already exists)"
+        puts "Skipping #{name}/app/controllers directory (already exists)"
       end
 
       #copy models
       if not File.exist?("#{name}/app/models")
-        p "Creating #{name}/app/models directory and files"
+        puts "=> Creating #{name}/app/models directory and files"
         system("mkdir #{name}/app/models")
       else
-        p "Skipping #{name}/app/models directory (already exists)"
+        puts "Skipping #{name}/app/models directory (already exists)"
       end
 
       #copy views
       if not File.exist?("#{name}/app/views")
-        p "Creating #{name}/app/views directory and files"
+        puts "=> Creating #{name}/app/views directory and files"
         system("mkdir #{name}/app/views")
       else
-        p "Skipping #{name}/app/views directory (already exists)"
+        puts "Skipping #{name}/app/views directory (already exists)"
       end
 
       #copy views/layouts
       if not File.exist?("#{name}/app/views/layouts")
-        p "Creating #{name}/app/views/layouts directory and files"
+        puts "=> Creating #{name}/app/views/layouts directory and files"
         system("mkdir #{name}/app/views/layouts")
         system("cp #{skeleton_path 'app/views/layouts/*.erb'} #{name}/app/views/layouts")
       else
-        p "Skipping #{name}/app/views/layouts directory (already exists)"
+        puts "Skipping #{name}/app/views/layouts directory (already exists)"
       end
 
       #copy views/index
       if not File.exist?("#{name}/app/views/index")
-        p "Creating #{name}/app/views/index directory and files"
+        puts "=> Creating #{name}/app/views/index directory and files"
         system("mkdir #{name}/app/views/index")
         system("cp #{skeleton_path 'app/views/index/*.erb'} #{name}/app/views/index")
       else
-        p "Skipping #{name}/app/views/index directory (already exists)"
+        puts "Skipping #{name}/app/views/index directory (already exists)"
       end
 
       #copy views/global
       if not File.exist?("#{name}/app/views/global")
-        p "Creating #{name}/app/views/global directory and files"
+        puts "=> Creating #{name}/app/views/global directory and files"
         system("mkdir #{name}/app/views/global")
         system("cp #{skeleton_path 'app/views/global/*.erb'} #{name}/app/views/global")
       else
-        p "Skipping #{name}/app/views/global directory (already exists)"
+        puts "Skipping #{name}/app/views/global directory (already exists)"
       end
 
       #copy helpers
       if not File.exist?("#{name}/app/helpers")
-        p "Creating #{name}/app/helpers directory and files"
+        puts "=> Creating #{name}/app/helpers directory and files"
         system("mkdir #{name}/app/helpers")
         system("cp #{skeleton_path 'app/helpers/*.rb'} #{name}/app/helpers")  
       else
-        p "Skipping #{name}/app/helpers directory (already exists)"
+        puts "Skipping #{name}/app/helpers directory (already exists)"
       end
 
       #copy configs
       if not File.exist?("#{name}/config")
-        p "Creating #{name}/config directory and files"
+        puts "=> Creating #{name}/config directory and files"
         system("mkdir #{name}/config")
         system("cp #{skeleton_path 'config/*.yml'} #{name}/config")
         system("cp #{skeleton_path 'config/*.rb'} #{name}/config")
@@ -454,111 +454,111 @@ Task - Create a task file in project/tasks with the class name of TaskName.
         boot = ERB.new(results.join(""))
         File.open("#{name}/config/boot.rb", 'w') {|f| f.write(boot.result(binding)) }
       else
-        p "Skipping #{name}/config directory (already exists)"
+        puts "Skipping #{name}/config directory (already exists)"
       end
 
       # create gems folder
       if not File.exist?("#{name}/gems")
-        p "Creating #{name}/gems directory"
+        puts "=> Creating #{name}/gems directory"
         system("cp -R #{skeleton_path 'gems'} #{name}")
         system("mkdir #{name}/gems/doozer")
       else
-        p "Skipping #{name}/gems directory (already exists)"
+        puts "Skipping #{name}/gems directory (already exists)"
       end
 
       # create log folder
       if not File.exist?("#{name}/log")
-        p "Creating #{name}/log directory"
+        puts "=> Creating #{name}/log directory"
         system("mkdir #{name}/log")
       else
-        p "Skipping #{name}/log directory (already exists)"
+        puts "Skipping #{name}/log directory (already exists)"
       end
 
       #copy db
       if not File.exist?("#{name}/db")
-        p "Creating #{name}/db directory and files"
+        puts "=> Creating #{name}/db directory and files"
         system("mkdir #{name}/db")
       else
-        p "Skipping #{name}/db directory (already exists)"
+        puts "Skipping #{name}/db directory (already exists)"
       end
 
       #copy lib
       if not File.exist?("#{name}/lib")
-        p "Creating #{name}/lib directory and files"
+        puts "=> Creating #{name}/lib directory and files"
         system("mkdir #{name}/lib")
       else
-        p "Skipping #{name}/lib directory (already exists)"
+        puts "Skipping #{name}/lib directory (already exists)"
       end
 
       #copy script
       if not File.exist?("#{name}/script")
-        p "Creating #{name}/script directory and files"
+        puts "=> Creating #{name}/script directory and files"
         system("mkdir #{name}/script")
         system("cp #{skeleton_path 'script/*'} #{name}/script")
       else
-        p "Skipping #{name}/script directory (already exists)"
+        puts "Skipping #{name}/script directory (already exists)"
       end
 
       #copy static
       if not File.exist?("#{name}/static")
-        p "Creating #{name}/static directory and files"
+        puts "=> Creating #{name}/static directory and files"
         system("mkdir #{name}/static")
         system("cp #{skeleton_path 'static/*.*'} #{name}/static/")
       else
-        p "Skipping #{name}/static directory (already exists)"
+        puts "Skipping #{name}/static directory (already exists)"
       end
 
       #copy static/images
       if not File.exist?("#{name}/static/images")
-        p "Creating #{name}/script/images directory and files"
+        puts "=> Creating #{name}/script/images directory and files"
         system("mkdir #{name}/static/images")
       else
-        p "Skipping #{name}/static/images directory (already exists)"
+        puts "Skipping #{name}/static/images directory (already exists)"
       end
 
       #copy static/css
       if not File.exist?("#{name}/static/css")
-        p "Creating #{name}/script/css directory and files"
+        puts "=> Creating #{name}/script/css directory and files"
         system("mkdir #{name}/static/css")
         system("cp #{skeleton_path 'static/css/*.css'} #{name}/static/css")
       else
-        p "Skipping #{name}/static/css directory (already exists)"
+        puts "Skipping #{name}/static/css directory (already exists)"
       end
 
       #copy static/images
       if not File.exist?("#{name}/static/html")
-        p "Creating #{name}/script/html directory and files"
+        puts "=> Creating #{name}/script/html directory and files"
         system("mkdir #{name}/static/html")
       else
-        p "Skipping #{name}/static/html directory (already exists)"
+        puts "Skipping #{name}/static/html directory (already exists)"
       end
 
       #copy static/images
       if not File.exist?("#{name}/static/js")
-        p "Creating #{name}/script/js directory and files"
+        puts "=> Creating #{name}/script/js directory and files"
         system("mkdir #{name}/static/js")
         system("cp #{skeleton_path 'static/js/*.js'} #{name}/static/js")
       else
-        p "Skipping #{name}/static/js directory (already exists)"
+        puts "Skipping #{name}/static/js directory (already exists)"
       end
 
       #copy test
       if not File.exist?("#{name}/test")
-        p "Creating #{name}/test directory and files"
+        puts "=> Creating #{name}/test directory and files"
         system("mkdir #{name}/test")
         system("cp #{skeleton_path 'test/*.rb'} #{name}/test")
         system("mkdir #{name}/test/fixtures")
         system("cp #{skeleton_path 'test/fixtures/*.rb'} #{name}/test/fixtures")
       else
-        p "Skipping test directory (already exists)"
+        puts "Skipping test directory (already exists)"
       end
 
       #copy test
       if not File.exist?("#{name}/tasks")
-        p "Creating #{name}/tasks directory and files"
+        puts "=> Creating #{name}/tasks directory and files"
         system("mkdir #{name}/tasks")
       else
-        p "Skipping #{name}/test directory (already exists)"
+        puts "Skipping #{name}/test directory (already exists)"
       end
 
       #copy rakefile

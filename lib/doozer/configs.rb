@@ -15,8 +15,8 @@ module Doozer
    
    # Load all the config files for the application. Also instantiates a default application Logger.
    def self.load(rack_env)
-      printf "Application path: #{app_path}\n" 
-      printf "Loading configs for #{rack_env}\n"
+      puts "=> App path #{app_path}" 
+      puts "=> Loading configs for #{rack_env}"
       
       @@config = Config::CONFIG
       rack_env = (rack_env.kind_of? String) ? rack_env.to_sym : rack_env
@@ -37,18 +37,16 @@ module Doozer
       end
 
       @@config[:rack_env] = rack_env
-      # p ":rack_env set to #{@@config[:rack_env]}"
-
       begin
        @@config[:database] = Configs.symbolize_keys( YAML.load(File.read(File.join(app_path,'config/database.yml'))) )
       rescue
-       printf "--Failed to load config/database.yml \n"
+       puts "ERROR => Failed to load config/database.yml"
       end
 
       begin
        @@config[:app] = Configs.symbolize_keys( YAML.load(File.read(File.join(app_path,'config/app.yml'))) )
       rescue
-       printf "--Failed to load config/app.yml\n"
+       puts "ERROR => Failed to load config/app.yml"
       end
 
    end
