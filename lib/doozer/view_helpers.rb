@@ -126,6 +126,13 @@ module Doozer
       Doozer::Configs.static_url(path)
     end
 
+    # Render the page title
+    #
+    # retuns page title if it was set in a controller
+    def title
+      return @view[:title] ? @view[:title] : ""
+    end
+
     # Creates metatags
     #
     # retuns a differnt metatag for each key/value added to @view[:meta] hash. See Doozer::Controller#meta for adding examples.

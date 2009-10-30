@@ -114,7 +114,7 @@ module Doozer
     def self.model(orm, name)
       return if help?(name, :model)       
       raise "No ORM is defined. Please set this in database.yml" if orm.nil?
-      puts "Loaded ORM: #{orm}"        
+      puts "=> Loaded ORM: #{orm}"        
       path = "#{APP_PATH}/app/models/#{name}.rb"
       if not File.exist?(path)
         puts "=> Generating model: #{path}"
@@ -174,7 +174,7 @@ end
     
       raise "No ORM is defined. Please set this in database.yml" if orm.nil?      
       version = migrate_next
-      puts "Loaded ORM: #{orm}"
+      puts "=> Loaded ORM: #{orm}"
       path = "#{APP_PATH}/db/#{version}_#{name.downcase}.rb"
       if not File.exist?(path)
         puts "=> Generating migration: #{path}"
