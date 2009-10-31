@@ -6,7 +6,7 @@
 # script/cluster
 # -C command (start || stop || restart || test)
 # -E environment (default: development || deployment)
-# -D (daemonize) - This is automatically initialized in deployment mode. There should be no need to pass this unless you want to test it out in development mode.
+# -D (daemonize) - This is automatically initialized in deployment mode.
 # -c config file - This is used to pass a config file for starting up unicorn
 # -h Hellllpppp!!!
 require 'optparse'
@@ -21,7 +21,7 @@ clusters = Doozer::Configs.symbolize_keys(config[:clusters])
 @server = clusters[:server]
 @config = DOOZER_PATH + '/doozer/rackup/server.ru'
 @test_config = DOOZER_PATH + '/doozer/rackup/test.rb'
-@config_file = '' #optional config file to use instead of the default unicorn config
+@config_file = '' # optional config file to use instead of the default unicorn config
 @apps = []
 
 for app in clusters[:apps]
@@ -69,9 +69,7 @@ end
 #
 # See Unicorn::Configurator for more details => http://unicorn.bogomips.org/Unicorn/Configurator.html 
 #
-# You'll need to create your own scripts for stoping and restarting.
-#
-# See this page for details => http://unicorn.bogomips.org/SIGNALS.html
+# See this page for supported signals => http://unicorn.bogomips.org/SIGNALS.html
 def start_unicorn
   puts "Starting unicorn..."
   for app in @apps
@@ -82,12 +80,20 @@ def start_unicorn
     system(cmd)
     break
   end
+  puts "Did they start?"
+  system("ps -aux | grep unicorn")
 end
 
 # Calls stop() and then start()
 def restart
   stop
   start
+end
+
+# Calls stop_unicorn() and then start_unicorn()
+def restart_unicorn
+  stop_unicorn
+  start_unicorn
 end
 
 # <b>development</b>: Only stops the first configured (if more then one) address:port
@@ -113,7 +119,30 @@ def stop
       end
     end
   end
-  system("ps | grep rackup")
+  sleep(1)
+  system("ps -aux | grep rackup")
+end
+
+# <b>development</b>: Only stops the first configured (if more then one) address:port
+#
+# <b>deployment</b>: Automatically stops the first master process/cluster defined for address:port
+def stop_unicorn
+  system("ps -aux | grep unicorn")
+  puts "Stoping unicorn..."
+  for app in @apps
+    if @env == :deployment
+      pid_file = "#{APP_PATH}/log/unicorn.pid"
+      puts "=> Reading pid from #{pid_file}" 
+      if File.exist?(pid_file)
+        system("kill -QUIT `cat #{pid_file}`")
+      else
+        puts "ERROR => pid file doesn't exist"
+      end
+    end
+    break
+  end
+  sleep(1)
+  system("ps -aux | grep unicorn")
 end
 
 opts = OptionParser.new("", 24, '  ') { |opts|
@@ -144,9 +173,9 @@ case @command
   when :start
     @server != 'unicorn' ? start() : start_unicorn()
   when :restart
-    restart()
+    @server != 'unicorn' ? restart() : restart_unicorn()
   when :stop
-    stop()
+    @server != 'unicorn' ? stop() : stop_unicorn()
   when :test
     test()
 end

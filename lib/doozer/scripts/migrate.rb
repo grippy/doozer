@@ -84,7 +84,7 @@ raise "Missing Version and Direction in form of version:direction" if @version.n
 Doozer::Initializer.boot(@env)
 
 # need to grab all the current migrations. assumes there isn't a migration with 000_*_.rb
-migrations = [nil].concat( Dir.glob(File.join(APP_PATH,'db/*_*.rb')) )
+migrations = [nil].concat( Dir.glob(File.join(APP_PATH,'db/*_*.rb')).sort )
 
 puts "Loading migration files..."
 puts "=> Version: #{@version}"
