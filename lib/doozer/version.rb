@@ -1,3 +1,4 @@
+
 module Doozer
   module Version
     MAJOR=0
