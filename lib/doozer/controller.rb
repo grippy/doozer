@@ -24,6 +24,22 @@ module Doozer
     attr_accessor :params
     # @flash variable containing a hash of strings which are persisted in the flash cookie across the response, next request/response and then removed.
     attr_accessor :flash
+    # @cookies variable containing a hash of hashes which persit until the expiration date
+    #
+    # To save cookies: All hash keys must be symbols and value strings.
+    # Reserved hash keys per cookie:
+    # => :expires - Time.now + some duration. This default to 30 days if not defined
+    # => :path - The path for the cookie. This defaults to '/' if not defined
+    #
+    # Example:
+    # => @cookies[:yum_yum]={:a=>'123',
+    #                        :b=>'abc',
+    #                        :expires=>Time.now + 3.day
+    #                        :path=>'/path'}
+    # To delete a cookie, set it to nil or delete it from @cookies
+    #
+    # => @cookies[:testing]=nil
+    attr_accessor :cookies
     # @session variable containing a hash of strings which are persisted in the session cookie until the browser session expires.
     attr_accessor :session
     # @view variable containing a hash of string which are read from layouts.
@@ -87,12 +103,15 @@ module Doozer
       #holds all variables for template binding
       @view={}; @view[:meta]={}
       
-      #store flash
+      #loads flash messages from cookie
       @flash={}; flash_from_cookie()
       
-      #store session
+      #loads cookies from cookies
+      @cookies={}; cookies_from_cookie()
+      
+      #loads session cookie
       @session={}; session_from_cookie()
-            
+      
       #symbolize params
       @params={}; @request.params.each { |key, value| @params[key.to_sym] = value} 
       
@@ -223,7 +242,7 @@ module Doozer
 
     # Read all the session cookies and store them in the @session instance variable
     def session_from_cookie
-      #split name/value pairs and merge with flash
+      #split name/value pairs and merge into @session
       if @request.cookies
         if @request.cookies["session"]
           pairs=@request.cookies["session"].split('&')
@@ -235,6 +254,44 @@ module Doozer
       end
     end
     
+    # Read all the persistant cookies and store them in the @cookies instance variable
+    def cookies_from_cookie
+      #split name/value pairs
+      if @request.cookies
+        @request.cookies.each { | k, v |
+          if not ["flash", "session", "rack.session"].include?(k)
+            values = {}
+            pairs=v.split('&')
+            pairs.each{ | pair | 
+              pair = pair.split('=')
+              values[pair[0].to_sym]=CGI::unescape(pair[1])
+            }
+            @cookies[k.to_sym] = values
+          end
+        }
+      end
+    end
+    
+    # Iterates all controller @cookies and writes them to the response
+    def write_response_cookies(r)
+      @cookies.each { | cookie, values |
+        if not values.nil?
+          value = []
+          path = values.delete(:path) || '/'
+          expires = values.delete(:expires) || Time.now + (60 * 60 * 24 * 30)
+          values.each { |k, v| 
+            value.push("#{k.to_s}=#{CGI::escape(v)}") if not v.nil? 
+          }
+          value = value.join('&')
+        else
+          value = ''
+          path = ''
+          expires = Time.now - 60
+        end
+        r.set_cookie(cookie.to_s,{:value=>value, :path=>path, :expires=>expires})
+      }
+      return r
+    end
     # Method for setting metatags via Controllers. 
     #
     # Pass an options hash to @view[:meta] and all the key/values are turned into metatags with the corresponding values. See Doozer::ViewHelpers#metatags for creating the metatags for view.

@@ -28,6 +28,8 @@ module Doozer
         route = Doozer::Routing::Routes::match(path)
         # p "path: #{path}"
         # p "route: #{route.inspect}"
+        app = nil
+        
         if not route.nil?
           if route.app.nil?
             extra_params = route.extra_params(path)
@@ -63,10 +65,13 @@ module Doozer
               r.set_cookie('flash',{:value=>nil, :path=>'/'})
               r.set_cookie('session',{:value=>controller.session_to_cookie(), :path=>'/'})
               
+              r = controller.write_response_cookies(r)
+              
+              
               # finalize the request
               controller.finished!
               controller = nil
-              return r.to_a
+              app = r.to_a
 
             rescue Doozer::Redirect => redirect
               # set the status to the one defined in the route which type of redirect do we need to handle?
@@ -82,7 +87,7 @@ module Doozer
               # finalize the request              
               controller.finished!
               controller = nil
-              return r.to_a
+              app = r.to_a
             rescue => e
               # finalize the request
               controller.finished!
@@ -95,17 +100,22 @@ module Doozer
                 end
                 logger.error("Printing env variables:")
                 logger.error(env.inspect)
-                return [500, {"Content-Type" => "text/html"}, @@errors[500]]
+                app = [500, {"Content-Type" => "text/html"}, @@errors[500]]
               else
                 raise e
               end
             end
           else
-            return route.app.call(env)
+            app = route.app.call(env)
           end
         else
-          return [404, {"Content-Type" => "text/html"}, @@errors[404]]
+          app = [404, {"Content-Type" => "text/html"}, @@errors[404]]
         end
+        
+        # pass the app through route.middleware_after if defined
+        app = route.middleware_after.new(app, {:config=>Doozer::Configs, :route=>route}).call(env) if route.middleware_after
+  
+        return app
     end
     
     def execution_time(name = nil, point = :start)

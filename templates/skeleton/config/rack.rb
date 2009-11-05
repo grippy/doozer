@@ -11,6 +11,33 @@ class HelloWorld
   end
 end
 
+# Here's an example of how to create an after doozer app middleware
+# This class inherits Doozer::Middleware which has a few helper methods for passing Doozer::App calls on down the line
+# You can define each route to call :middleware_after=>ClassName
+# This example removes all tabs and carriage returns to slim the response
+class AfterDoozer < Doozer::Middleware
+  def call(env)
+    status, header, response = @app
+    # logger.info(self.class.to_s)
+    if route and response.is_a?(Rack::Response)
+      response.body.each{ | p | p.gsub!(/\t|^\n|^\n\n/, '') } if not [:json, :js].include?(route.format)
+    end
+    [status, header, response]
+  end
+end
+
+# This module#class is hooked into the pipeline before Doozer::App is called.
+# It inherits from Doozer::Middleware so it has access to #config but not #route
+module Doozer
+  class MiddlewareBeforeDozerApp < Doozer::Middleware
+    def call(env)
+      # puts "MiddlewareBeforeDozerApp2"
+      # logger.info("here")
+      status, header, response = @app.call(env)
+      [status, header, response]
+    end
+  end
+end
 # map additional rack apps here..
 def stack
   # map your apps here...

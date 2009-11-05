@@ -201,8 +201,8 @@ module Doozer
     class Route
       attr_accessor :name, :path, :controller, :action, 
                     :layout, :status, :content_type, :tokens, 
-                    :grouping, :app, :format, :view, :view_path
-                    
+                    :grouping, :app, :format, :view, :view_path,
+                    :middleware_before, :middleware_after
                     
       # Initializes a route with the following parameters
       # route - [:name, 'path', {args}]
@@ -214,6 +214,8 @@ module Doozer
         @layout = (args[:layout]) ? args[:layout] : 'default'
         @status = (args[:status]) ? args[:status] : 200
         @app=args[:app]
+        @middleware_before=args[:middleware_before]
+        @middleware_after=args[:middleware_after]
         @format = (args[:format]) ? args[:format] : :html
         #@content_type = (args[:content_type]) ? args[:content_type] : 'text/html'
         case @format

@@ -8,11 +8,16 @@ module Doozer
       @args[:config]
     end
     def logger
-      config.logger
+      @args[:config].logger
     end
     def route
       @args[:route]
     end
-
+  end
+  
+  class MiddlewareBeforeDozerApp < Middleware
+    def call(env)
+      @app.call(env)
+    end
   end
 end
