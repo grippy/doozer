@@ -98,11 +98,11 @@ Bypassing Routes and Going Straight to the Rack
 
 Doozer::Routing::Routes.draw do | map | 
   
-          """ 
-          :name, 
-          :path w/ tokens, 
-          :options={:controller, :action, :status, :formats=>[:json, :xml, :js, etc], :app=>Class.new} 
-          """
+  """ 
+  :name, 
+  :path w/ tokens, 
+  :options={:controller, :action, :status, :formats=>[:json, :xml, :js, etc], :app=>Class.new or :middleware_after=>ClassName} 
+  """
   map.add :index, '', {:controller=>'index', :action=>'index', :status=>200}
 
 end
