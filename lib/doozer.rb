@@ -27,9 +27,9 @@ module Doozer
     autoload :Route,        "doozer/exceptions"
   end
   
+  autoload :Mailer,                       "doozer/mailer"
   autoload :Middleware,                   "doozer/middleware"
   autoload :MiddlewareBeforeDozerApp,     "doozer/middleware"
-
 
   autoload :Task,           "doozer/task"
   autoload :ViewHelpers,    "doozer/view_helpers"

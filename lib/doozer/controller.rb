@@ -260,13 +260,18 @@ module Doozer
       if @request.cookies
         @request.cookies.each { | k, v |
           if not ["flash", "session", "rack.session"].include?(k)
-            values = {}
-            pairs=v.split('&')
-            pairs.each{ | pair | 
-              pair = pair.split('=')
-              values[pair[0].to_sym]=CGI::unescape(pair[1])
-            }
-            @cookies[k.to_sym] = values
+            begin
+              # we need to catch cookies which don't match the key=value&key=value pattern...
+              # google analytics for example
+              values = {}
+              pairs=v.split('&')
+              pairs.each{ | pair | 
+                pair = pair.split('=')
+                values[pair[0].to_sym]=CGI::unescape(pair[1])
+              }
+              @cookies[k.to_sym] = values
+            rescue
+            end
           end
         }
       end
