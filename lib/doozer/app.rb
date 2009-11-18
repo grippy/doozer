@@ -64,9 +64,7 @@ module Doozer
               #execution_time(nil,:end)
               r.set_cookie('flash',{:value=>nil, :path=>'/'})
               r.set_cookie('session',{:value=>controller.session_to_cookie(), :path=>'/'})
-              
               r = controller.write_response_cookies(r)
-              
               
               # finalize the request
               controller.finished!
@@ -133,6 +131,7 @@ module Doozer
       load_models
       puts "=> Caching files"
       @@controllers = {}
+      @@mailers = {}
       @@layouts={}
       @@views={}
       @@errors={}
@@ -224,6 +223,39 @@ module Doozer
           end
         }
       }
+
+      mailer_files = Dir.glob(File.join(app_path,'app/mailers/*_mailer.rb'))
+      mailer_files.each { |f|
+        require f 
+        key = f.split("mailers/")[1].split("_mailer.rb")[0]
+        if key.index("_")
+          value = key.split('_').each{ | k | k.capitalize! }.join('') 
+        else
+          value = key.capitalize
+        end
+        klass_name = "#{value}Mailer"
+        @@mailers[key.to_sym] = klass_name
+        # puts "cache mailer: #{key.to_sym}"
+        # importing view helpers into controller
+        mailer_klass = Object.const_get(klass_name)
+        # automatically ads the application helper to the class
+        mailer_klass.include_view_helper('application_helper')
+        mailer_klass.include_view_helpers
+      }
+      
+      mail_key = :mail
+      mailer_files = Dir.glob(File.join(app_path,"app/views/#{mail_key.to_s}/*.erb"))
+      mailer_files.each { | f |
+        #!!!don't cache partials here!!!
+        view = f.split("#{mail_key.to_s}/")[1].split(".erb")[0].gsub(/\./,'_')
+        if not /^_/.match( view )
+          # puts "cache view: #{view}"
+          results = []
+          File.new(f, "r").each { |line| results << line }
+          @@views[mail_key] = {} if @@views[mail_key].nil?
+          @@views[mail_key][view.to_sym] = ERB.new(results.join(""))
+        end
+      }
     end
     
     # Load application routes
@@ -256,22 +288,24 @@ module Doozer
       watcher.addDirectory( app_path + '/static/', "*.*")
       watcher.addDirectory( app_path + '/static/', "**/**/*")
 
-
       watcher.sleepTime = 1
       watcher.start { |status, file|
         if(status == FileSystemWatcher::CREATED) then
             puts "created: #{file}"
             load_files
             Doozer::Partial.clear_loaded_partials
+            Doozer::MailerPartial.clear_loaded_partials
         elsif(status == FileSystemWatcher::MODIFIED) then
             puts "modified: #{file}"
             load_files
             Doozer::Partial.clear_loaded_partials
+            Doozer::MailerPartial.clear_loaded_partials
             Doozer::Configs.clear_static_files
         elsif(status == FileSystemWatcher::DELETED) then
             puts "deleted: #{file}"
             load_files
             Doozer::Partial.clear_loaded_partials
+            Doozer::MailerPartial.clear_loaded_partials
             Doozer::Configs.clear_static_files
         end
       }

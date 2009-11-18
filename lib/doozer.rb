@@ -28,6 +28,7 @@ module Doozer
   end
   
   autoload :Mailer,                       "doozer/mailer"
+  autoload :MailerPartial,                "doozer/mailer_partial"
   autoload :Middleware,                   "doozer/middleware"
   autoload :MiddlewareBeforeDozerApp,     "doozer/middleware"
 

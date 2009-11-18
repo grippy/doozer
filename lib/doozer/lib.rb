@@ -16,6 +16,17 @@ module Doozer
       end
       return klass
     end
+
+    #Return an underscored string from a ClassName string. 
+    # example: input "ExampleClass" > "example_class"    
+    def self.underscore(s)
+        while true do
+          m = /[A-Z]/.match(s)
+          break if m.to_s == ''
+          s.gsub!(/#{m.to_s}/,"_#{m.to_s.downcase}")
+        end
+        s.gsub(/^_/,'') # move the first underscore
+    end
     
     #Returns a one-level deep folder/file structure and preservers underscores for filename. 
     # example: input "folder_some_file_name" > "folder/some_file_name"
@@ -28,5 +39,6 @@ module Doozer
       end
       s
     end
+
   end
 end

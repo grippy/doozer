@@ -300,7 +300,9 @@ module Doozer
         return hashish
       end
       
-      # Parses route tokens and returns a helper method which evntually module_eval'd into Doozer::ViewHelpers
+      # Parses route tokens and returns a helper method which evntually is module_eval'd into Doozer::ViewHelpers
+      #
+      # => creates helper methods for route_name_url (relative) and route_name_aurl (absolute)
       def url_helper_method
         method_name=[@name]
         # method_name.push(@format) if @format != :html
@@ -334,6 +336,7 @@ module Doozer
         end
         url_method.push("})")
         method = """def #{method_name.join('_')}#{signature.join('')}; #{url_method} end"""
+        method += "\n#{method.gsub(/url\(/, 'aurl(')}"
         return method
       end
       

@@ -63,7 +63,14 @@ module Doozer
                 task(name.downcase)
               else
                 help?(:help, :task)
-              end            
+              end
+            when :mailer, :"-E"
+              if args.length == 3
+                name = args[2]
+                mailer(name.downcase)
+              else
+                help?(:help, :mailer)
+              end               
             else
             help_all
           end
@@ -85,6 +92,7 @@ module Doozer
       help(:helper)
       help(:migrate)
       help(:task)
+      help(:mailer)
     end
     
     def self.controller(name)
@@ -308,6 +316,42 @@ end
       end
     end
     
+    def self.mailer(name)
+      return if help?(name, :mailer)
+      path = "#{APP_PATH}/app/mailers"
+      if not File.exist?(path)
+        puts "Creating directory for mailers..."
+        system("mkdir #{path}")
+      end
+      
+      puts "Generating file..."
+      path = "#{path}/#{name}_mailer.rb"
+      if not File.exist?(path)
+        puts "=> Generating mailer: #{path}"
+        file = File.new(path, "w+")
+        if file
+           klass = Doozer::Lib.classify(name)
+           template = """
+#= #{klass}Mailer
+class #{klass}Mailer < Doozer::Mailer
+    \"\"\"Default configuration options for mailers 
+      self.require_view_helpers=[]
+      self.view_dir = 'mail'
+      self.layout = :default_mail
+    \"\"\"
+end
+"""
+           file.syswrite(template)
+        else
+           puts "ERROR => Unable to open file!"
+        end
+      else
+        puts "Skipping: #{path} (already exists)"
+      end
+    end    
+    
+    
+    
     def self.help?(name, action=nil)
       if name.to_sym == :"-h" or name == :help
         puts "Commands:"
@@ -355,10 +399,15 @@ Migration - Create a migration file in project/db with the next available versio
 Task - Create a task file in project/tasks with the class name of TaskName.
     Command: doozer generate (task or -T) task_name 
     Example: doozer generate task task_name\n"""
+        when :mailer, :mail :"-E"
+          h += """
+Mailer - Create a mailer file in project/app/mailers with the class name of NameMailer. '_mailer' is automatically appended to the name.
+    Command: doozer generate (mailer or -E) mailer_name 
+    Example: doozer generate mailer mailer_name\n"""   
       end
       puts h
     end
-
+    
     # TODO: Dry this up...
     def self.skeleton(name)
     
@@ -385,6 +434,14 @@ Task - Create a task file in project/tasks with the class name of TaskName.
         system("cp #{skeleton_path 'app/controllers/*.rb'} #{name}/app/controllers")
       else
         puts "Skipping #{name}/app/controllers directory (already exists)"
+      end
+
+      #copy mailers
+      if not File.exist?("#{name}/app/mailers")
+        puts "=> Creating #{name}/app/mailers directory"
+        system("mkdir #{name}/app/mailers")
+      else
+        puts "Skipping #{name}/app/mailers directory (already exists)"
       end
 
       #copy models
@@ -419,6 +476,14 @@ Task - Create a task file in project/tasks with the class name of TaskName.
         system("cp #{skeleton_path 'app/views/index/*.erb'} #{name}/app/views/index")
       else
         puts "Skipping #{name}/app/views/index directory (already exists)"
+      end
+      
+      #copy views/mail
+      if not File.exist?("#{name}/app/views/mail")
+        puts "=> Creating #{name}/app/views/mail directory"
+        system("mkdir #{name}/app/views/mail")
+      else
+        puts "Skipping #{name}/app/views/mail directory (already exists)"
       end
 
       #copy views/global

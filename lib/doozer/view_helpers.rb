@@ -58,6 +58,13 @@ module Doozer
       return url
     end
     
+    # A wrapper method for #url which automatically sets the base_url to the one configured for the application
+    #
+    def aurl(opt)
+      opt[:base_url] = base_url
+      url(opt)
+    end
+    
     # Creates an html anchor tag.
     #
     # text - the text of the anchor tag
@@ -67,6 +74,17 @@ module Doozer
     # prop - a hash of anchor tag attributes to add to the link
     def link(text='', opt={}, prop={})
       "<a href=\"#{url(opt)}\"#{hash_to_props(prop)}>#{text}</a>"
+    end
+    
+    # Creates an html anchor tag with an absolute url.
+    #
+    # text - the text of the anchor tag
+    # 
+    # opt - a hash of options which are passed to url(opt)
+    #
+    # prop - a hash of anchor tag attributes to add to the link
+    def alink(text='', opt={}, prop={})
+      "<a href=\"#{aurl(opt)}\"#{hash_to_props(prop)}>#{text}</a>"
     end
     
     # Creates an img tag.
