@@ -53,6 +53,7 @@ module Doozer
       load_partial(name) if  @@partials[name].nil?
       erb = @@partials[name]
       if erb
+          puts "  Partial: #{name}" if Doozer::Configs.rack_env == :development
           partial = Doozer::Partial.new(erb, locals, route)
           partial.bind()
       else

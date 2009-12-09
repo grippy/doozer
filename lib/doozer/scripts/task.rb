@@ -31,24 +31,29 @@ require 'optparse'
 @task = nil
 @args = nil
 @help = false
+@daemonize = false
 
 opts = OptionParser.new("", 24, ' ') { |opts|
   opts.banner = "Usage: script/task -T task_name -E (default: development || deployment || test)"
   opts.separator ""
   opts.separator "Command options:"
-
+  
   opts.on("-E", "--env ENVIRONMENT", "use ENVIRONMENT for defaults (default: development || deployment || test)") { |e|
     @env = e.to_sym
   }
-
+  
   opts.on("-T", "--task TASK", "run task_name") { | t |
     @task = t
   }
-
+  
   opts.on("-A", "--args ARGS", "args") { |a|
     @args = eval(a) if a and a.length
   }
-
+  
+  opts.on("-D", "--daemonize") {
+    @daemonize = true
+  }
+  
   opts.on("-h", "--help", "Show this message") do
     @help = true
   end
@@ -68,8 +73,27 @@ if @task
   raise "Can't find this task file #{@task}" if file.nil?
   task, file_name = file_to_task(file, @args)
   if not @help
-    puts "Running #{@task}.."
+    puts "=> Running #{@task}"
     Doozer::Initializer.boot(@env)
+    if @daemonize
+      puts "=> Daemonize"
+      log_file = "#{APP_PATH}/log/task/#{@task}.log"
+      error_file = "#{APP_PATH}/log/task/#{@task}_errors.log"
+      puts "=> Writing to log: #{log_file}"
+      exit if fork
+      Process.setsid
+      exit if fork
+      # Dir.chdir "/"
+      File.umask 0000
+      file = File.open(log_file, File::RDWR|File::APPEND|File::CREAT, 0600)
+      STDIN.reopen(file)
+      STDOUT.reopen(file)
+      file = File.open(error_file, File::RDWR|File::APPEND|File::CREAT, 0600)
+      STDERR.reopen(file)
+      # STDIN.reopen "/dev/null" 
+      # STDOUT.reopen "/dev/null", "a"
+      # STDERR.reopen "/dev/null", "a"
+    end
     task.run
   else
     puts ""

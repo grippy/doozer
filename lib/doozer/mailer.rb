@@ -51,14 +51,17 @@ module Doozer
     self.require_view_helpers=[]
     
     # Default directory where the views should be looked up for the mail.
+    #
     self.view_dir = 'mail'
 
-    # Default mail layout to use for the mail
-    self.layout = :default_mail.
+    # Default mail layout symbol to use for the mail.
+    #
+    self.layout = :default_mail
     
     # Create a new Mailer object
-    # - action: a symbol of the action to call
-    # - args: optional list of arguments
+    # action: a symbol of the action to call
+    # args: optional list of arguments
+    #
     def initialize(action, args={})
       @controller = self.class.to_s
       @action = action
@@ -94,49 +97,6 @@ module Doozer
     def bind
       @erb.result(binding)
     end
-
-    # Include additional view helpers declared for the class.
-    #
-    # This method automatically appends '_helper' to each required helper symbol
-    def self.include_view_helpers
-        # importing view helpers into controller
-        self.require_view_helpers.each { | sym |
-          self.include_view_helper("#{sym.to_s}_helper")
-        }
-    end
-    
-    # Include the app/helpers file_name. Expects helper as a string.
-    #
-    # You must pass the full file name if you use this method.
-    #
-    # Example: self.include_view_helper('application_helper')
-    def self.include_view_helper(helper)
-        # importing view helpers into controller
-        include Object.const_get(Doozer::Lib.classify("#{helper}"))
-    end
-    
-    # Call this method to deliver a Mailer#action
-    #
-    # Arguments
-    # - action: The action of the mailer to call passed as a symbol.
-    # - args:  The mail arguments to initialize the email with. 
-    #           All remaining arguments are turned into instance variables and bound to the view.
-    
-    # Note: The send mechanism is empty and must be overriden in the calling application.
-    def self.deliver(action, args={})
-      # puts "deliver.."
-      mailer = self.new(action, args)
-      mailer.method(action).call()
-      mailer.finished! #close the db connections
-      mailer.package
-      send(mailer)
-    end
-    
-    # The send method must be overriden by the calling class.
-    # 
-    # => The mailer object passed to this mehod of the instance of the mailer.
-    # => You can access the mailer.envelope.encoded (tmail) object which handles all the encoding.
-    def self.send(mailer); end
 
     # This method is called prior to #send and handles the creation of envelope.
     def package
@@ -232,6 +192,49 @@ module Doozer
     def mailer_class
       Object.const_get(self.class.to_s)
     end
+
+    # Include additional view helpers declared for the class.
+    #
+    # This method automatically appends '_helper' to each required helper symbol
+    def self.include_view_helpers
+        # importing view helpers into controller
+        self.require_view_helpers.each { | sym |
+          self.include_view_helper("#{sym.to_s}_helper")
+        }
+    end
+    
+    # Include the app/helpers file_name. Expects helper as a string.
+    #
+    # You must pass the full file name if you use this method.
+    #
+    # Example: self.include_view_helper('application_helper')
+    def self.include_view_helper(helper)
+        # importing view helpers into controller
+        include Object.const_get(Doozer::Lib.classify("#{helper}"))
+    end
+    
+    # Call this method to deliver a Mailer#action
+    #
+    # Arguments
+    # - action: The action of the mailer to call passed as a symbol.
+    # - args:  The mail arguments to initialize the email with. 
+    #           All remaining arguments are turned into instance variables and bound to the view.
+    
+    # Note: The send mechanism is empty and must be overriden in the calling application.
+    def self.deliver(action, args={})
+      # puts "deliver.."
+      mailer = self.new(action, args)
+      mailer.method(action).call()
+      mailer.finished! #close the db connections
+      mailer.package
+      send(mailer)
+    end
+    
+    # The send method must be overriden by the calling class.
+    # 
+    # => The mailer object passed to this mehod of the instance of the mailer.
+    # => You can access the mailer.envelope.encoded (tmail) object which handles all the encoding.
+    def self.send(mailer); end
     
     private
     def change_layout(sym)

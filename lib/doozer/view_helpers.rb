@@ -61,7 +61,7 @@ module Doozer
     # A wrapper method for #url which automatically sets the base_url to the one configured for the application
     #
     def aurl(opt)
-      opt[:base_url] = base_url
+      opt[:base_url] = base_url if opt.kind_of? Hash
       url(opt)
     end
     

@@ -28,17 +28,17 @@ module Doozer
     #
     # To save cookies: All hash keys must be symbols and value strings.
     # Reserved hash keys per cookie:
-    # => :expires - Time.now + some duration. This default to 30 days if not defined
-    # => :path - The path for the cookie. This defaults to '/' if not defined
+    # :expires - Time.now + some duration. This default to 30 days if not defined
+    # :path - The path for the cookie. This defaults to '/' if not defined
     #
     # Example:
-    # => @cookies[:yum_yum]={:a=>'123',
+    # @cookies[:yum_yum]={:a=>'123',
     #                        :b=>'abc',
     #                        :expires=>Time.now + 3.day
     #                        :path=>'/path'}
     # To delete a cookie, set it to nil or delete it from @cookies
     #
-    # => @cookies[:testing]=nil
+    # @cookies[:testing]=nil
     attr_accessor :cookies
     # @session variable containing a hash of strings which are persisted in the session cookie until the browser session expires.
     attr_accessor :session
@@ -124,8 +124,8 @@ module Doozer
       
       #turn extra params into instance variables...
       args[:extra_params].each { |key, value| self.instance_variable_set("@#{key}".to_sym, value)}
-      logger.info("       Params: #{@request.params.inspect}") if not @request.params.nil?
-      logger.info("       Extra params: #{args[:extra_params].inspect}") if not args[:extra_params].nil?
+      puts "  Params: #{@request.params.inspect}" if not @request.params.nil?
+      puts "  Extra params: #{args[:extra_params].inspect}" if not args[:extra_params].nil?
     end
     
     # Renders an action with any of the following overridable parameters:
@@ -169,7 +169,6 @@ module Doozer
       change_layout(args[:layout]) if args[:layout]
       change_view(args[:view]) if args[:view]
       change_view(ERB.new(args[:text])) if args[:text]
-      
     end
     
     # This method is called from the appserver controller handler.
