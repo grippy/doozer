@@ -44,6 +44,8 @@ module Doozer
 
     # This class method lazily loads and caches the erb templates of the requested partials
     def self.partial(file=nil, locals={}, route=route)
+      puts "  Partial: #{file}" 
+      
       #p "Class method: Doozer::Partial#partial"
       if file.index("/").nil?
         name = "#{route.controller}/_#{file}" 
@@ -53,7 +55,6 @@ module Doozer
       load_partial(name) if  @@partials[name].nil?
       erb = @@partials[name]
       if erb
-          puts "  Partial: #{name}" if Doozer::Configs.rack_env == :development
           partial = Doozer::Partial.new(erb, locals, route)
           partial.bind()
       else

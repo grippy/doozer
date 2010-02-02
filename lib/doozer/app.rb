@@ -111,7 +111,7 @@ module Doozer
         end
         
         # pass the app through route.middleware_after if defined
-        app = route.middleware_after.new(app, {:config=>Doozer::Configs, :route=>route}).call(env) if route.middleware_after
+        app = route.middleware_after.new(app, {:config=>Doozer::Configs, :route=>route}).call(env) if route and route.middleware_after
   
         return app
     end
