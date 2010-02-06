@@ -4,7 +4,7 @@ module Doozer
     def initialize(args=nil)
       @args = args
     end
-    def models(list)
+    def models(list=[])
       for m in list
         require "app/models/#{m.to_s}"
       end
