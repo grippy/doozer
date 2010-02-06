@@ -213,7 +213,22 @@ module Doozer
         include Object.const_get(Doozer::Lib.classify("#{helper}"))
     end
     
-    # Call this method to deliver a Mailer#action
+    # Call this method to generate a Mailer#action instance
+    #
+    # Arguments
+    # - action: The action of the mailer to call passed as a symbol.
+    # - args:  The mail arguments to initialize the email with. 
+    #           All remaining arguments are turned into instance variables and bound to the view.
+    def self.generate(action, args={})
+      # puts "process.."
+      mailer = self.new(action, args)
+      mailer.method(action).call()
+      mailer.finished! #close the db connections
+      mailer.package
+      mailer
+    end
+
+    # Call this method to deliver a Mailer#action instance
     #
     # Arguments
     # - action: The action of the mailer to call passed as a symbol.
@@ -222,12 +237,19 @@ module Doozer
     
     # Note: The send mechanism is empty and must be overriden in the calling application.
     def self.deliver(action, args={})
-      # puts "deliver.."
-      mailer = self.new(action, args)
-      mailer.method(action).call()
-      mailer.finished! #close the db connections
-      mailer.package
-      send(mailer)
+      # puts "deliver.."  
+      send(generate(action, args))
+    end
+
+    # Call this method to queue a Mailer#action instance for defered sending
+    #
+    # Arguments
+    # - action: The action of the mailer to call passed as a symbol.
+    # - args:  The mail arguments to initialize the email with. 
+    #           All remaining arguments are turned into instance variables and bound to the view.
+    def self.queue(action, args={})
+      # puts "save.."
+      save(generate(action, args))
     end
     
     # The send method must be overriden by the calling class.
@@ -235,6 +257,13 @@ module Doozer
     # => The mailer object passed to this mehod of the instance of the mailer.
     # => You can access the mailer.envelope.encoded (tmail) object which handles all the encoding.
     def self.send(mailer); end
+    
+    # The save method must be overriden by the calling class.
+    # 
+    # => Implement this method to serialize a mailer and store it in the db.
+    # => The mailer object passed to this mehod of the instance of the mailer.
+    # => You can access the mailer.envelope.encoded (tmail) object which handles all the encoding.
+    def self.save(mailer); end
     
     private
     def change_layout(sym)
