@@ -225,7 +225,7 @@ module Doozer
       mailer.method(action).call()
       mailer.finished! #close the db connections
       mailer.package
-      mailer
+      return mailer
     end
 
     # Call this method to deliver a Mailer#action instance
