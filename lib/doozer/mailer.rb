@@ -225,6 +225,9 @@ module Doozer
       mailer.method(action).call()
       mailer.finished! #close the db connections
       mailer.package
+      
+      puts mailer.inspect
+      
       return mailer
     end
 
