@@ -225,10 +225,7 @@ module Doozer
       mailer.method(action).call()
       mailer.finished! #close the db connections
       mailer.package
-      
-      puts mailer.inspect
-      
-      return mailer
+      mailer
     end
 
     # Call this method to deliver a Mailer#action instance
@@ -241,7 +238,7 @@ module Doozer
     # Note: The send mechanism is empty and must be overriden in the calling application.
     def self.deliver(action, args={})
       # puts "deliver.."  
-      send(self.generate(action, args))
+      send(generate(action, args))
     end
 
     # Call this method to queue a Mailer#action instance for defered sending
@@ -252,7 +249,7 @@ module Doozer
     #           All remaining arguments are turned into instance variables and bound to the view.
     def self.queue(action, args={})
       # puts "save.."
-      save(self.generate(action, args))
+      save(generate(action, args))
     end
     
     # The send method must be overriden by the calling class.
